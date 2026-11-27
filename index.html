@@ -89,8 +89,10 @@ body.lock{overflow:hidden}
 footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
 .sheet{max-width:1060px;margin:28px auto 48px;background:rgba(255,252,248,.93);border-radius:30px;box-shadow:0 18px 50px rgba(90,40,40,.22),0 6px 18px rgba(90,40,40,.14);overflow:hidden;position:relative}
 @media (max-width:760px){
- .wrap{padding:0 20px}
+ .wrap{padding:0 12px}
  .nav{border-radius:20px 20px 0 0}
+ .nav-in{padding:12px 12px}
+ .links a{margin-left:12px}
  .arr{display:none}
  .story-tile{flex:0 0 100%}
  .works{grid-template-columns:1fr}
@@ -98,7 +100,7 @@ footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
  .hero h1{font-size:28px}
  .tag{font-size:15px;margin-top:6px}
  .sec{padding:22px 0}
- .sheet{margin:12px 16px 28px;border-radius:20px}
+ .sheet{margin:10px 6px 24px;border-radius:18px}
  .viewer{width:min(92vw,420px);height:min(86vh,760px);height:min(86dvh,760px);border-radius:24px}
  .wviewer{max-height:88vh;max-height:88dvh}
  .wbig{height:44vh}
@@ -238,7 +240,7 @@ function makeZoom(box,getImg){
  function bind(){st.img=getImg()||st.img;}
  return{st:st,reset:reset,apply:apply,clamp:clamp,panBy:panBy,zoomTo:zoomTo,bind:bind};
 }
-function bindPinch(box,zm,onDone){
+function bindPinch(box,zm){
  var pd=0,pz=1,px0=0,py0=0,ltT=0,ltX=0,ltY=0,panX=0,panY=0;
  box.addEventListener('touchstart',function(e){
   if(e.touches.length===2){
@@ -345,10 +347,6 @@ track.addEventListener('pointerdown',function(e){
  if(anim){cancelAnimationFrame(anim);anim=null;}
  track.classList.add('dragging');
  touchPause();
- if(e.pointerType==='mouse'){
-  if(e.cancelable)e.preventDefault();
-  try{track.setPointerCapture(e.pointerId);}catch(err){}
- }
 });
 window.addEventListener('pointermove',function(e){
  if(!dragging)return;
@@ -634,6 +632,7 @@ window.addEventListener('keydown',function(e){
 </script>
 </body>
 </html>
+
 
 
 
