@@ -79,9 +79,10 @@ body.lock{overflow:hidden}
 .wbig{height:54vh;position:relative;overflow:hidden;background:#eee;flex:none}
 .wbig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-select:none;will-change:transform;pointer-events:none}
 .wbig .expBtn{bottom:12px;right:12px}
-.winfo{padding:20px 24px 24px;overflow:auto}
-.winfo h3{color:#b3564e;margin-bottom:10px;font-size:22px}
-.winfo p{color:#8a5a52;line-height:1.6}
+/* Текст в окне работы: широкие поля, крупный читаемый текст */
+.winfo{padding:26px 32px 30px;overflow:auto}
+.winfo h3{color:#b3564e;margin-bottom:12px;font-size:24px}
+.winfo p{color:#6e4640;line-height:1.75;font-size:16px}
 .cta-static{display:block;margin-top:18px;background:linear-gradient(135deg,#ff9a8a,#ffb199);color:#fff;text-align:center;padding:13px;border-radius:14px;font-weight:700;text-decoration:none}
 .contacts{text-align:center;padding:40px 0 60px}
 .contacts p{margin:10px 0 18px;color:#8a5a52}
@@ -105,6 +106,9 @@ footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
  .viewer{width:min(92vw,420px);height:min(86vh,760px);height:min(86dvh,760px);border-radius:24px}
  .wviewer{max-height:88vh;max-height:88dvh}
  .wbig{height:44vh}
+ .winfo{padding:20px 18px 22px}
+ .winfo h3{font-size:20px}
+ .winfo p{font-size:15px}
 }
 </style>
 </head>
@@ -633,6 +637,7 @@ window.addEventListener('keydown',function(e){
 </script>
 </body>
 </html>
+
 
 
 
