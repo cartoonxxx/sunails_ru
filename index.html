@@ -2,12 +2,12 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sun Nails — Солнечный маникюр</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="sheet" style="background:#fff8f2 url(images/centr.jpg) center/cover no-repeat">
+<div class="sheet">
 <nav class="nav"><div class="nav-in" style="max-width:960px;margin:0 auto">
 <div class="logo">☀ Sun Nails</div>
 <div class="links"><a href="#stories">Сторис</a><a href="#works">Работы</a><a href="#contacts">Контакты</a></div>
@@ -57,6 +57,8 @@
 <div class="prog" id="prog"></div>
 <button class="xbtn" data-close="1">✕</button>
 <div class="slides" id="slides"></div>
+<div class="tapzone tzL" id="tzL"></div>
+<div class="tapzone tzR" id="tzR"></div>
 <div class="cap" id="cap"></div>
 <a class="cta" href="#contacts" id="storyCta">Записаться ›</a>
 </div>
@@ -74,18 +76,6 @@
 <script>
 (function(){
 "use strict";
-
-/* ============================================================
-   НАСТРОЙКА СКОРОСТИ АВТОПРОКРУТКИ ЛЕНЫ СТОРИС (только телефон)
-   AUTO_SPEED     — пикселей в СЕКУНДУ:
-                    20–40 — очень медленно, 60 — средне, 120 — быстро
-   AUTO_PAUSE_MS  — пауза (мс) после касания пальцем, перед
-                    тем как лента снова поедет сама
-   ============================================================ */
-var AUTO_SPEED = 30;
-var AUTO_PAUSE_MS = 2500;
-var IS_MOBILE = window.matchMedia('(max-width:760px)');
-
 var STORIES=[
 {title:'Новинки сезона',slides:['images/story-1-slide-1.jpg','images/story-1-slide-2.jpg']},
 {title:'Нежный френч',slides:['images/story-2-slide-1.jpg','images/story-2-slide-2.jpg']},
@@ -98,9 +88,6 @@ var WORKS=[
 {title:'Акварельная дымка',text:'Полупрозрачные пастельные переливы — лёгкий и воздушный дизайн для особого образа.',img:'images/work-2-aquarelle.jpg'},
 {title:'Весеннее цветение',text:'Веточка сакуры на молочном фоне — самый нежный маникюр этой весны.',img:'images/work-3-sakura.jpg'}
 ];
-
-/* --- Блокировка прокрутки страницы при открытом оверлее --- */
-function setLock(on){document.body.classList.toggle('lock',on);}
 
 /* --- Лента сторис --- */
 var track=document.getElementById('strack');
@@ -134,34 +121,12 @@ function go(dir){
 document.getElementById('sPrev').addEventListener('click',function(){go(-1);});
 document.getElementById('sNext').addEventListener('click',function(){go(1);});
 
-/* --- Автопрокрутка ленты (только телефон) --- */
-var overlayOpen=false;
-var pausedUntil=0, autoT=null, lastAutoT=0;
-function autoLoop(t){
- if(!IS_MOBILE.matches){autoT=null;lastAutoT=0;return;}
- if(!lastAutoT)lastAutoT=t;
- var dt=t-lastAutoT;lastAutoT=t;
- if(!dragging&&!anim&&!overlayOpen&&performance.now()>=pausedUntil){
-  var max=maxScroll();
-  if(max<=1){track.scrollLeft=0;}
-  else if(track.scrollLeft>=max-1){track.scrollLeft=0;}
-  else track.scrollLeft=Math.min(max,track.scrollLeft+AUTO_SPEED*dt/1000);
- }
- autoT=requestAnimationFrame(autoLoop);
-}
-if(IS_MOBILE.matches)autoT=requestAnimationFrame(autoLoop);
-try{IS_MOBILE.addEventListener('change',function(e){
- if(e.matches&&!autoT)autoT=requestAnimationFrame(autoLoop);
-});}catch(err){}
-function touchPause(){pausedUntil=performance.now()+AUTO_PAUSE_MS;}
-
 var downX=0,downS=0,vel=0,lastX=0,lastT=0;
 track.addEventListener('pointerdown',function(e){
  downX=e.clientX;downS=track.scrollLeft;dragging=true;moved=false;vel=0;
  lastX=e.clientX;lastT=performance.now();
  if(anim){cancelAnimationFrame(anim);anim=null;}
  track.classList.add('dragging');
- touchPause();
 });
 window.addEventListener('pointermove',function(e){
  if(!dragging)return;
@@ -177,7 +142,6 @@ window.addEventListener('pointermove',function(e){
 window.addEventListener('pointerup',function(e){
  if(!dragging)return;
  dragging=false;track.classList.remove('dragging');
- touchPause();
  if(moved){
   calcStep();
   var raw=downS-(e.clientX-downX)-vel*160;
@@ -186,7 +150,7 @@ window.addEventListener('pointerup',function(e){
   animateTo(target);
  }
 });
-track.addEventListener('pointercancel',function(){dragging=false;track.classList.remove('dragging');touchPause();});
+track.addEventListener('pointercancel',function(){dragging=false;track.classList.remove('dragging');});
 track.addEventListener('click',function(e){
  if(moved){e.stopPropagation();e.preventDefault();moved=false;}
 },true);
@@ -213,31 +177,23 @@ track.addEventListener('scroll',function(){
  },170);
 });
 
-/* --- Просмотр сторис: лента ВСЕХ кадров с подгрузкой --- */
+/* --- Просмотр сторис --- */
 var so=document.getElementById('storyOvl'),sv=document.getElementById('storyView');
 var sl=document.getElementById('slides'),pg=document.getElementById('prog');
 var cap=document.getElementById('cap');
-var curStory=0,sIdx=0;
-
+var curStory=0,sIdx=0,sTimer=null;
 function openStory(i,fromEl){
- overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
- setLock(true);
  curStory=i;sIdx=0;
  sl.innerHTML='';pg.innerHTML='';
- resetZoom();
  STORIES[i].slides.forEach(function(u,k){
   var d=document.createElement('div');
-  d.className='slide';
-  var img=document.createElement('img');
-  img.loading='lazy';img.src=u;img.alt='';
-  d.appendChild(img);sl.appendChild(d);
+  d.className='slide'+(k===0?' on':'');
+  d.style.backgroundImage='url('+u+')';
+  sl.appendChild(d);
   var s=document.createElement('div');
   s.className='seg';s.innerHTML='<b></b>';
   pg.appendChild(s);
  });
- var segs=pg.children;
- for(var j=0;j<segs.length;j++)segs[j].className=j===0?'seg done':'seg';
- sl.scrollLeft=0;
  cap.textContent=STORIES[i].title;
  if(fromEl){
   var r=fromEl.getBoundingClientRect();
@@ -246,134 +202,28 @@ function openStory(i,fromEl){
   sv.style.transformOrigin=ox+'% '+oy+'%';
  }
  so.classList.add('open');
- requestAnimationFrame(function(){requestAnimationFrame(function(){so.classList.add('show');});});
+ requestAnimationFrame(function(){requestAnimationFrame(function(){
+  so.classList.add('show');
+  startSlide(0);
+ });});
 }
-
-/* Полоски прогресса следуют за позицией ленты */
-sl.addEventListener('scroll',function(){
- if(!so.classList.contains('open'))return;
- var w=sl.clientWidth||1;
- var idx=Math.round(sl.scrollLeft/w);
- var n=STORIES[curStory].slides.length;
- idx=Math.max(0,Math.min(n-1,idx));
- if(idx!==sIdx){sIdx=idx;resetZoom();}
- var segs=pg.children;
- for(var j=0;j<segs.length;j++)segs[j].className='seg'+(j<=idx?' done':'');
-},{passive:true});
-
-/* --- Зум кадра в сторис: щипок 1x–4x, перетаскивание, двойной тап --- */
-var zScale=1,zX=0,zY=0,curImg=null;
-function resetZoom(){
- if(curImg){curImg.style.transition='transform .25s ease-out';curImg.style.transform='';curImg=null;}
- zScale=1;zX=0;zY=0;
- sl.style.touchAction='';
+function startSlide(k){
+ sIdx=k;
+ var segs=pg.children,sls=sl.children,j;
+ for(j=0;j<segs.length;j++)segs[j].className='seg'+(j<k?' done':'');
+ segs[k].className='seg run';
+ for(j=0;j<sls.length;j++)sls[j].className='slide'+(j===k?' on':'');
+ if(sTimer)clearTimeout(sTimer);
+ sTimer=setTimeout(function(){
+  if(sIdx+1<STORIES[curStory].slides.length)startSlide(sIdx+1);else closeOv(so);
+ },5000);
 }
-function applyZoom(){
- if(curImg){
-  curImg.style.transition='none';
-  curImg.style.transform='translate('+zX+'px,'+zY+'px) scale('+zScale+')';
- }
-}
-function clampPan(){
- if(!curImg)return;
- var r=sl.getBoundingClientRect();
- var ox=Math.max(0,(r.width*zScale-r.width)/2);
- var oy=Math.max(0,(r.height*zScale-r.height)/2);
- zX=Math.max(-ox,Math.min(ox,zX));
- zY=Math.max(-oy,Math.min(oy,zY));
-}
-function imgAt(idx){
- var s=sl.children[idx];
- return s?s.querySelector('img'):null;
-}
-/* зум к точке тапа (двойной тап) */
-function zoomAt(x,y){
- var r=sl.getBoundingClientRect();
- var cx=x-r.left-r.width/2, cy=y-r.top-r.height/2;
- zX=-cx*(zScale-1); zY=-cy*(zScale-1);
- clampPan();
-}
-var pinchOn=false,panOn=false;
-var tX0=0,tY0=0,tDist0=0,tScale0=1,zx0=0,zy0=0,px0=0,py0=0;
-var lastTapT=0,lastTapX=0,lastTapY=0;
-sl.addEventListener('touchstart',function(e){
- if(!so.classList.contains('show'))return;
- if(e.touches.length===2){
-  e.preventDefault();
-  pinchOn=true;panOn=false;
-  var a=e.touches[0],b=e.touches[1];
-  tX0=(a.clientX+b.clientX)/2;tY0=(a.clientY+b.clientY)/2;
-  tDist0=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-  tScale0=zScale;zx0=zX;zy0=zY;
-  var r=sl.getBoundingClientRect();
-  var rx=tX0-r.left-r.width/2, ry=tY0-r.top-r.height/2;
-  px0=(rx-zX)/tScale0; py0=(ry-zY)/tScale0;
-  if(!curImg)curImg=imgAt(sIdx);
-  sl.style.touchAction='none';
-  return;
- }
- if(e.touches.length===1&&zScale>1){
-  panOn=true;
-  tX0=e.touches[0].clientX;tY0=e.touches[0].clientY;zx0=zX;zy0=zY;
- }
-},{passive:false});
-sl.addEventListener('touchmove',function(e){
- if(pinchOn&&e.touches.length===2){
-  e.preventDefault();
-  var a=e.touches[0],b=e.touches[1];
-  var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-  zScale=Math.max(1,Math.min(4,tScale0*d/tDist0));
-  if(zScale<=1.01){resetZoom();}
-  else{
-   var r=sl.getBoundingClientRect();
-   var c1x=(a.clientX+b.clientX)/2-r.left-r.width/2;
-   var c1y=(a.clientY+b.clientY)/2-r.top-r.height/2;
-   zX=c1x-zScale*px0; zY=c1y-zScale*py0;
-   clampPan();applyZoom();
-  }
-  return;
- }
- if(panOn&&e.touches.length===1&&zScale>1){
-  e.preventDefault();
-  zX=zx0+(e.touches[0].clientX-tX0);
-  zY=zy0+(e.touches[0].clientY-tY0);
-  clampPan();applyZoom();
- }
-},{passive:false});
-sl.addEventListener('touchend',function(e){
- if(pinchOn){
-  if(e.touches.length<2){pinchOn=false;if(zScale<=1.01)sl.style.touchAction='';}
-  return;
- }
- if(panOn&&e.touches.length===0){panOn=false;if(zScale<=1.01)sl.style.touchAction='';return;}
- /* двойной тап — приблизить или вернуть */
- if(zScale<=1.01&&e.touches.length===0&&e.changedTouches.length===1){
-  var t=performance.now();
-  var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
-  if(t-lastTapT<320&&Math.hypot(x-lastTapX,y-lastTapY)<26){
-   curImg=imgAt(sIdx);
-   if(curImg){zScale=2.5;zoomAt(x,y);applyZoom();sl.style.touchAction='none';}
-   lastTapT=0;e.preventDefault();
-  }else{lastTapT=t;lastTapX=x;lastTapY=y;}
- }
-},{passive:false});
-
-/* на десктопе ленту кадров можно тянуть мышью */
-var mdOn=false,mdX=0,mdS=0;
-sl.addEventListener('pointerdown',function(e){
- if(e.pointerType==='mouse'&&zScale<=1.01){mdOn=true;mdX=e.clientX;mdS=sl.scrollLeft;sl.classList.add('grabbing');}
+document.getElementById('tzR').addEventListener('click',function(){
+ if(sIdx+1<STORIES[curStory].slides.length)startSlide(sIdx+1);else closeOv(so);
 });
-window.addEventListener('pointermove',function(e){
- if(mdOn)sl.scrollLeft=mdS-(e.clientX-mdX);
+document.getElementById('tzL').addEventListener('click',function(){
+ if(sIdx>0)startSlide(sIdx-1);else startSlide(sIdx);
 });
-window.addEventListener('pointerup',function(){if(mdOn){mdOn=false;sl.classList.remove('grabbing');}});
-/* колесо мыши внутри сторис крутит кадры */
-sl.addEventListener('wheel',function(e){
- if(Math.abs(e.deltaX)>Math.abs(e.deltaY))return;
- e.preventDefault();
- sl.scrollLeft+=e.deltaY;
-},{passive:false});
-
 tiles.forEach(function(t,i){t.addEventListener('click',function(){openStory(i,t);});});
 document.getElementById('storyCta').addEventListener('click',function(e){
  e.preventDefault();closeOv(so);
@@ -383,8 +233,6 @@ document.getElementById('storyCta').addEventListener('click',function(e){
 /* --- Просмотр работ --- */
 var wo=document.getElementById('workOvl');
 function openWork(i,fromEl){
- overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
- setLock(true);
  document.getElementById('wImg').style.backgroundImage='url('+WORKS[i].img+')';
  document.getElementById('wTitle').textContent=WORKS[i].title;
  document.getElementById('wText').textContent=WORKS[i].text;
@@ -405,43 +253,20 @@ document.getElementById('workCta').addEventListener('click',function(e){
  setTimeout(function(){document.getElementById('contacts').scrollIntoView({behavior:'smooth'});},340);
 });
 
-/* --- Закрытие: блокировка страницы снимается СРАЗУ, до анимации --- */
+/* --- Закрытие --- */
 function closeOv(o){
  o.classList.remove('show');
- overlayOpen=false;pausedUntil=performance.now()+AUTO_PAUSE_MS;
- setLock(false);
- resetZoom();
+ if(sTimer){clearTimeout(sTimer);sTimer=null;}
  setTimeout(function(){o.classList.remove('open');},320);
 }
 document.querySelectorAll('[data-close]').forEach(function(el){
  el.addEventListener('click',function(){closeOv(el.closest('.ovl'));});
 });
-
-/* Жесты поверх оверлея не прокручивают страницу.
-   Исключение: прокручиваемый текст внутри окна работ (.winfo). */
-[so,wo].forEach(function(o){
- o.addEventListener('touchmove',function(e){
-  if(!e.target.closest||!e.target.closest('.winfo'))e.preventDefault();
- },{passive:false});
-});
-
-/* --- Сайт не увеличивается случайным щипком ---
-   Два пальца блокируются везде, КРОМЕ окна сторис (там работает зум картинки). */
-document.addEventListener('gesturestart',function(e){e.preventDefault();},{passive:false});
-document.addEventListener('touchmove',function(e){
- if(e.touches.length>1){
-  if(e.target.closest&&e.target.closest('#storyView'))return;
-  e.preventDefault();
- }
-},{passive:false});
-
 window.addEventListener('keydown',function(e){
- if(so.classList.contains('open')){
-  if(e.key==='Escape')closeOv(so);
-  if(e.key==='ArrowRight')sl.scrollBy({left:sl.clientWidth,behavior:'smooth'});
-  if(e.key==='ArrowLeft')sl.scrollBy({left:-sl.clientWidth,behavior:'smooth'});
+ if(e.key==='Escape'){
+  if(so.classList.contains('open'))closeOv(so);
+  if(wo.classList.contains('open'))closeOv(wo);
  }
- if(e.key==='Escape'&&wo.classList.contains('open'))closeOv(wo);
 });
 })();
 </script>
