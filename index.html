@@ -55,7 +55,6 @@
 <div class="ovl-bg" data-close="1"></div>
 <div class="viewer" id="storyView">
 <div class="prog" id="prog"></div>
-<button class="lens-btn" id="lensBtn" title="Лупа (на ПК)">🔍</button>
 <button class="xbtn" data-close="1">✕</button>
 <div class="slides" id="slides"></div>
 <div class="cap" id="cap"></div>
@@ -66,7 +65,6 @@
 <div class="ovl" id="workOvl">
 <div class="ovl-bg" data-close="1"></div>
 <div class="wviewer">
-<button class="lens-btn" id="wLensBtn" title="Лупа (на ПК)">🔍</button>
 <button class="xbtn" data-close="1">✕</button>
 <div class="wbig" id="wImg"></div>
 <div class="winfo"><h3 id="wTitle"></h3><p id="wText"></p><a class="cta-static" href="#contacts" id="workCta">Записаться ›</a></div>
@@ -219,112 +217,14 @@ track.addEventListener('scroll',function(){
 var so=document.getElementById('storyOvl'),sv=document.getElementById('storyView');
 var sl=document.getElementById('slides'),pg=document.getElementById('prog');
 var cap=document.getElementById('cap');
-var wo=document.getElementById('workOvl');
-var wbig=document.getElementById('wImg');
 var curStory=0,sIdx=0;
-
-/* ============ Общий зум-модуль (сторис И работы) ============
-   щипок двумя пальцами 1x–4x, перетаскивание при увеличении,
-   двойной тап — приблизить/вернуть. Зум сбрасывается отдельно. */
-function makeZoom(area,isActive){
- var z={scale:1,x:0,y:0,img:null};
- var pinch=false,pan=false,tX0=0,tY0=0,tDist0=0,tScale0=1,zx0=0,zy0=0,px0=0,py0=0;
- var lastTapT=0,lastTapX=0,lastTapY=0;
- function apply(){
-  if(z.img){z.img.style.transition='none';
-   z.img.style.transform='translate('+z.x+'px,'+z.y+'px) scale('+z.scale+')';}
- }
- function clamp(){
-  if(!z.img)return;
-  var r=area.getBoundingClientRect();
-  var ox=Math.max(0,(r.width*z.scale-r.width)/2);
-  var oy=Math.max(0,(r.height*z.scale-r.height)/2);
-  z.x=Math.max(-ox,Math.min(ox,z.x));
-  z.y=Math.max(-oy,Math.min(oy,z.y));
- }
- function at(x,y){
-  var r=area.getBoundingClientRect();
-  var cx=x-r.left-r.width/2, cy=y-r.top-r.height/2;
-  z.x=-cx*(z.scale-1); z.y=-cy*(z.scale-1);
-  clamp();
- }
- z.reset=function(){
-  if(z.img){z.img.style.transition='transform .25s ease-out';z.img.style.transform='';}
-  z.img=null;z.scale=1;z.x=0;z.y=0;area.style.touchAction='';
- };
- z.use=function(i){z.img=i;};
- area.addEventListener('touchstart',function(e){
-  if(!isActive())return;
-  if(e.touches.length===2){
-   e.preventDefault();
-   pinch=true;pan=false;
-   var a=e.touches[0],b=e.touches[1];
-   tX0=(a.clientX+b.clientX)/2;tY0=(a.clientY+b.clientY)/2;
-   tDist0=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-   tScale0=z.scale;zx0=z.x;zy0=z.y;
-   var r=area.getBoundingClientRect();
-   var rx=tX0-r.left-r.width/2, ry=tY0-r.top-r.height/2;
-   px0=(rx-z.x)/tScale0; py0=(ry-z.y)/tScale0;
-   if(!z.img)z.img=area.querySelector('img');
-   area.style.touchAction='none';
-   return;
-  }
-  if(e.touches.length===1&&z.scale>1){
-   pan=true;
-   tX0=e.touches[0].clientX;tY0=e.touches[0].clientY;zx0=z.x;zy0=z.y;
-  }
- },{passive:false});
- area.addEventListener('touchmove',function(e){
-  if(pinch&&e.touches.length===2){
-   e.preventDefault();
-   var a=e.touches[0],b=e.touches[1];
-   var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-   z.scale=Math.max(1,Math.min(4,tScale0*d/tDist0));
-   if(z.scale<=1.01){z.reset();}
-   else{
-    var r=area.getBoundingClientRect();
-    var c1x=(a.clientX+b.clientX)/2-r.left-r.width/2;
-    var c1y=(a.clientY+b.clientY)/2-r.top-r.height/2;
-    z.x=c1x-z.scale*px0; z.y=c1y-z.scale*py0;
-    clamp();apply();
-   }
-   return;
-  }
-  if(pan&&e.touches.length===1&&z.scale>1){
-   e.preventDefault();
-   z.x=zx0+(e.touches[0].clientX-tX0);
-   z.y=zy0+(e.touches[0].clientY-tY0);
-   clamp();apply();
-  }
- },{passive:false});
- area.addEventListener('touchend',function(e){
-  if(pinch){
-   if(e.touches.length<2){pinch=false;if(z.scale<=1.01)area.style.touchAction='';}
-   return;
-  }
-  if(pan&&e.touches.length===0){pan=false;if(z.scale<=1.01)area.style.touchAction='';return;}
-  if(z.scale<=1.01&&e.touches.length===0&&e.changedTouches.length===1){
-   var t=performance.now();
-   var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
-   if(t-lastTapT<320&&Math.hypot(x-lastTapX,y-lastTapY)<26){
-    z.img=area.querySelector('img');
-    if(z.img){z.scale=2.5;at(x,y);apply();area.style.touchAction='none';}
-    lastTapT=0;e.preventDefault();
-   }else{lastTapT=t;lastTapX=x;lastTapY=y;}
-  }
- },{passive:false});
- return z;
-}
-
-var sZoom=makeZoom(sl,function(){return so.classList.contains('show');});
-var wZoom=makeZoom(wbig,function(){return wo.classList.contains('show');});
 
 function openStory(i,fromEl){
  overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
  setLock(true);
  curStory=i;sIdx=0;
- sZoom.reset();
  sl.innerHTML='';pg.innerHTML='';
+ resetZoom();
  STORIES[i].slides.forEach(function(u,k){
   var d=document.createElement('div');
   d.className='slide';
@@ -338,7 +238,6 @@ function openStory(i,fromEl){
  var segs=pg.children;
  for(var j=0;j<segs.length;j++)segs[j].className=j===0?'seg done':'seg';
  sl.scrollLeft=0;
- sZoom.use(imgAt(0));
  cap.textContent=STORIES[i].title;
  if(fromEl){
   var r=fromEl.getBoundingClientRect();
@@ -349,10 +248,6 @@ function openStory(i,fromEl){
  so.classList.add('open');
  requestAnimationFrame(function(){requestAnimationFrame(function(){so.classList.add('show');});});
 }
-function imgAt(idx){
- var s=sl.children[idx];
- return s?s.querySelector('img'):null;
-}
 
 /* Полоски прогресса следуют за позицией ленты */
 sl.addEventListener('scroll',function(){
@@ -361,29 +256,117 @@ sl.addEventListener('scroll',function(){
  var idx=Math.round(sl.scrollLeft/w);
  var n=STORIES[curStory].slides.length;
  idx=Math.max(0,Math.min(n-1,idx));
- if(idx!==sIdx){sIdx=idx;sZoom.reset();sZoom.use(imgAt(idx));}
+ if(idx!==sIdx){sIdx=idx;resetZoom();}
  var segs=pg.children;
  for(var j=0;j<segs.length;j++)segs[j].className='seg'+(j<=idx?' done':'');
 },{passive:true});
 
-/* Перетаскивание кадров мышью на ПК: снап отключаем на время drag,
-   чтобы он не отбирал прокрутку, и включаем обратно после отпускания */
+/* --- Зум кадра в сторис: щипок 1x–4x, перетаскивание, двойной тап --- */
+var zScale=1,zX=0,zY=0,curImg=null;
+function resetZoom(){
+ if(curImg){curImg.style.transition='transform .25s ease-out';curImg.style.transform='';curImg=null;}
+ zScale=1;zX=0;zY=0;
+ sl.style.touchAction='';
+}
+function applyZoom(){
+ if(curImg){
+  curImg.style.transition='none';
+  curImg.style.transform='translate('+zX+'px,'+zY+'px) scale('+zScale+')';
+ }
+}
+function clampPan(){
+ if(!curImg)return;
+ var r=sl.getBoundingClientRect();
+ var ox=Math.max(0,(r.width*zScale-r.width)/2);
+ var oy=Math.max(0,(r.height*zScale-r.height)/2);
+ zX=Math.max(-ox,Math.min(ox,zX));
+ zY=Math.max(-oy,Math.min(oy,zY));
+}
+function imgAt(idx){
+ var s=sl.children[idx];
+ return s?s.querySelector('img'):null;
+}
+/* зум к точке тапа (двойной тап) */
+function zoomAt(x,y){
+ var r=sl.getBoundingClientRect();
+ var cx=x-r.left-r.width/2, cy=y-r.top-r.height/2;
+ zX=-cx*(zScale-1); zY=-cy*(zScale-1);
+ clampPan();
+}
+var pinchOn=false,panOn=false;
+var tX0=0,tY0=0,tDist0=0,tScale0=1,zx0=0,zy0=0,px0=0,py0=0;
+var lastTapT=0,lastTapX=0,lastTapY=0;
+sl.addEventListener('touchstart',function(e){
+ if(!so.classList.contains('show'))return;
+ if(e.touches.length===2){
+  e.preventDefault();
+  pinchOn=true;panOn=false;
+  var a=e.touches[0],b=e.touches[1];
+  tX0=(a.clientX+b.clientX)/2;tY0=(a.clientY+b.clientY)/2;
+  tDist0=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+  tScale0=zScale;zx0=zX;zy0=zY;
+  var r=sl.getBoundingClientRect();
+  var rx=tX0-r.left-r.width/2, ry=tY0-r.top-r.height/2;
+  px0=(rx-zX)/tScale0; py0=(ry-zY)/tScale0;
+  if(!curImg)curImg=imgAt(sIdx);
+  sl.style.touchAction='none';
+  return;
+ }
+ if(e.touches.length===1&&zScale>1){
+  panOn=true;
+  tX0=e.touches[0].clientX;tY0=e.touches[0].clientY;zx0=zX;zy0=zY;
+ }
+},{passive:false});
+sl.addEventListener('touchmove',function(e){
+ if(pinchOn&&e.touches.length===2){
+  e.preventDefault();
+  var a=e.touches[0],b=e.touches[1];
+  var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+  zScale=Math.max(1,Math.min(4,tScale0*d/tDist0));
+  if(zScale<=1.01){resetZoom();}
+  else{
+   var r=sl.getBoundingClientRect();
+   var c1x=(a.clientX+b.clientX)/2-r.left-r.width/2;
+   var c1y=(a.clientY+b.clientY)/2-r.top-r.height/2;
+   zX=c1x-zScale*px0; zY=c1y-zScale*py0;
+   clampPan();applyZoom();
+  }
+  return;
+ }
+ if(panOn&&e.touches.length===1&&zScale>1){
+  e.preventDefault();
+  zX=zx0+(e.touches[0].clientX-tX0);
+  zY=zy0+(e.touches[0].clientY-tY0);
+  clampPan();applyZoom();
+ }
+},{passive:false});
+sl.addEventListener('touchend',function(e){
+ if(pinchOn){
+  if(e.touches.length<2){pinchOn=false;if(zScale<=1.01)sl.style.touchAction='';}
+  return;
+ }
+ if(panOn&&e.touches.length===0){panOn=false;if(zScale<=1.01)sl.style.touchAction='';return;}
+ /* двойной тап — приблизить или вернуть */
+ if(zScale<=1.01&&e.touches.length===0&&e.changedTouches.length===1){
+  var t=performance.now();
+  var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
+  if(t-lastTapT<320&&Math.hypot(x-lastTapX,y-lastTapY)<26){
+   curImg=imgAt(sIdx);
+   if(curImg){zScale=2.5;zoomAt(x,y);applyZoom();sl.style.touchAction='none';}
+   lastTapT=0;e.preventDefault();
+  }else{lastTapT=t;lastTapX=x;lastTapY=y;}
+ }
+},{passive:false});
+
+/* на десктопе ленту кадров можно тянуть мышью */
 var mdOn=false,mdX=0,mdS=0;
 sl.addEventListener('pointerdown',function(e){
- if(e.pointerType==='mouse'){mdOn=true;mdX=e.clientX;mdS=sl.scrollLeft;sl.classList.add('grabbing');sl.style.scrollSnapType='none';}
+ if(e.pointerType==='mouse'&&zScale<=1.01){mdOn=true;mdX=e.clientX;mdS=sl.scrollLeft;sl.classList.add('grabbing');}
 });
 window.addEventListener('pointermove',function(e){
  if(mdOn)sl.scrollLeft=mdS-(e.clientX-mdX);
 });
-window.addEventListener('pointerup',function(){
- if(mdOn){
-  mdOn=false;sl.classList.remove('grabbing');
-  sl.style.scrollSnapType='';
-  var w=sl.clientWidth||1;
-  var idx=Math.round(sl.scrollLeft/w);
-  sl.scrollTo({left:idx*w,behavior:'smooth'});
- }
-});
+window.addEventListener('pointerup',function(){if(mdOn){mdOn=false;sl.classList.remove('grabbing');}});
 /* колесо мыши внутри сторис крутит кадры */
 sl.addEventListener('wheel',function(e){
  if(Math.abs(e.deltaX)>Math.abs(e.deltaY))return;
@@ -391,52 +374,18 @@ sl.addEventListener('wheel',function(e){
  sl.scrollLeft+=e.deltaY;
 },{passive:false});
 
-/* --- Лупа на ПК: маленькая кнопка в левом верхнем углу,
-   за курсором следует круглое стекло с увеличением --- */
-function makeLens(btn,area){
- var lens=null,active=false;
- function ensure(){
-  if(!lens){lens=document.createElement('div');lens.className='lens';area.appendChild(lens);}
- }
- btn.addEventListener('click',function(){
-  if(active){if(lens){lens.remove();lens=null;}active=false;btn.classList.remove('lens-on');}
-  else{ensure();active=true;btn.classList.add('lens-on');}
- });
- area.addEventListener('mousemove',function(e){
-  if(!active||!lens)return;
-  var img=area.querySelector('img');
-  if(!img||!img.complete||!img.naturalWidth)return;
-  var r=area.getBoundingClientRect();
-  var x=e.clientX-r.left,y=e.clientY-r.top;
-  if(x<0||y<0||x>r.width||y>r.height){lens.style.display='none';return;}
-  var d=130,zoom=2.2;
-  lens.style.display='block';
-  lens.style.left=(x-d/2)+'px';lens.style.top=(y-d/2)+'px';
-  lens.style.backgroundImage='url('+img.src+')';
-  lens.style.backgroundSize=(r.width*zoom)+'px '+(r.height*zoom)+'px';
-  lens.style.backgroundPosition=(-x*zoom+d/2)+'px '+(-y*zoom+d/2)+'px';
- });
- area.addEventListener('mouseleave',function(){if(lens)lens.style.display='none';});
- area.addEventListener('mouseenter',function(){if(lens&&active)lens.style.display='block';});
-}
-makeLens(document.getElementById('lensBtn'),sv);
-makeLens(document.getElementById('wLensBtn'),wbig);
-
 tiles.forEach(function(t,i){t.addEventListener('click',function(){openStory(i,t);});});
 document.getElementById('storyCta').addEventListener('click',function(e){
  e.preventDefault();closeOv(so);
  setTimeout(function(){document.getElementById('contacts').scrollIntoView({behavior:'smooth'});},340);
 });
 
-/* --- Просмотр работ: фото теперь <img> — работает зум и лупа --- */
+/* --- Просмотр работ --- */
+var wo=document.getElementById('workOvl');
 function openWork(i,fromEl){
  overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
  setLock(true);
- wZoom.reset();
- wbig.innerHTML='';
- var img=document.createElement('img');
- img.src=WORKS[i].img;img.alt=WORKS[i].title;img.loading='lazy';
- wbig.appendChild(img);
+ document.getElementById('wImg').style.backgroundImage='url('+WORKS[i].img+')';
  document.getElementById('wTitle').textContent=WORKS[i].title;
  document.getElementById('wText').textContent=WORKS[i].text;
  if(fromEl){
@@ -461,7 +410,7 @@ function closeOv(o){
  o.classList.remove('show');
  overlayOpen=false;pausedUntil=performance.now()+AUTO_PAUSE_MS;
  setLock(false);
- sZoom.reset();wZoom.reset();
+ resetZoom();
  setTimeout(function(){o.classList.remove('open');},320);
 }
 document.querySelectorAll('[data-close]').forEach(function(el){
@@ -469,39 +418,34 @@ document.querySelectorAll('[data-close]').forEach(function(el){
 });
 
 /* Жесты поверх оверлея не прокручивают страницу.
-   ИСКЛЮЧЕНИЯ: текст работ (.winfo) и ЛЕНТА КАДРОВ (.slides) —
-   иначе нативный свайп сторис на телефоне не работал. */
+   Исключение: прокручиваемый текст внутри окна работ (.winfo). */
 [so,wo].forEach(function(o){
  o.addEventListener('touchmove',function(e){
-  if(!e.target.closest)return;
-  if(e.target.closest('.winfo')||e.target.closest('.slides'))return;
-  e.preventDefault();
+  if(!e.target.closest||!e.target.closest('.winfo'))e.preventDefault();
  },{passive:false});
 });
 
 /* --- Сайт не увеличивается случайным щипком ---
-   Два пальца блокируются везде, КРОМЕ окон сторис и работ
-   (там щипок работает на зум картинки). */
+   Два пальца блокируются везде, КРОМЕ окна сторис (там работает зум картинки). */
 document.addEventListener('gesturestart',function(e){e.preventDefault();},{passive:false});
 document.addEventListener('touchmove',function(e){
  if(e.touches.length>1){
-  if(e.target.closest&&(e.target.closest('#storyView')||e.target.closest('.wbig')))return;
+  if(e.target.closest&&e.target.closest('#storyView'))return;
   e.preventDefault();
  }
 },{passive:false});
 
-/* --- Клавиатура: стрелки листают кадры по одному, Esc закрывает --- */
 window.addEventListener('keydown',function(e){
  if(so.classList.contains('open')){
   if(e.key==='Escape')closeOv(so);
-  if(e.key==='ArrowRight'){e.preventDefault();sl.scrollBy({left:sl.clientWidth,behavior:'smooth'});}
-  if(e.key==='ArrowLeft'){e.preventDefault();sl.scrollBy({left:-sl.clientWidth,behavior:'smooth'});}
- }else if(wo.classList.contains('open')&&e.key==='Escape'){
-  closeOv(wo);
+  if(e.key==='ArrowRight')sl.scrollBy({left:sl.clientWidth,behavior:'smooth'});
+  if(e.key==='ArrowLeft')sl.scrollBy({left:-sl.clientWidth,behavior:'smooth'});
  }
+ if(e.key==='Escape'&&wo.classList.contains('open'))closeOv(wo);
 });
 })();
 </script>
 </body>
 </html>
+
 
