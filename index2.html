@@ -42,17 +42,10 @@ body.lock{overflow:hidden}
 .wcard:hover{transform:translateY(-6px);box-shadow:0 14px 32px rgba(214,140,120,.26)}
 .wimg{height:210px;background-size:cover;background-position:center;transition:transform .45s}
 .wcard:hover .wimg{transform:scale(1.05)}
-.wbody{padding:20px 24px 24px}
+.wbody{padding:22px 26px 26px}
 .wbody h3{color:#b3564e;margin-bottom:10px;font-size:19px}
 .wbody p{font-size:15px;color:#8a5a52;line-height:1.65}
 .wlink{display:inline-block;margin-top:14px;color:#c96a55;font-weight:700;font-size:14px}
-/* Текстовая зона под статьями: широкие поля от краёв */
-.article{max-width:800px;margin:0 auto;padding:26px 34px 30px;background:rgba(255,255,255,.78);border-radius:22px;box-shadow:0 8px 24px rgba(214,140,120,.16)}
-.article h3{color:#b3564e;font-size:20px;margin:22px 0 10px}
-.article h3:first-of-type{margin-top:0}
-.article p{font-size:16px;color:#6e4640;line-height:1.75;margin-bottom:14px}
-.article ul{margin:0 0 14px 20px;color:#6e4640;font-size:16px;line-height:1.75}
-.article li{margin-bottom:6px}
 .ovl{position:fixed;inset:0;display:none;z-index:50}
 .ovl.open{display:block}
 .ovl-bg{position:absolute;inset:0;background:rgba(40,15,15,.55);opacity:0;transition:opacity .35s}
@@ -85,7 +78,6 @@ body.lock{overflow:hidden}
 .ovl.show .wviewer{transform:translate(-50%,-50%) scale(1);opacity:1}
 .wbig{height:54vh;position:relative;overflow:hidden;background:#eee;flex:none}
 .wbig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-select:none;will-change:transform;pointer-events:none}
-/* Значок в фото работ — правый нижний угол фото */
 .wbig .expBtn{bottom:12px;right:12px}
 .winfo{padding:20px 24px 24px;overflow:auto}
 .winfo h3{color:#b3564e;margin-bottom:10px;font-size:22px}
@@ -97,21 +89,19 @@ body.lock{overflow:hidden}
 footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
 .sheet{max-width:1060px;margin:28px auto 48px;background:rgba(255,252,248,.93);border-radius:30px;box-shadow:0 18px 50px rgba(90,40,40,.22),0 6px 18px rgba(90,40,40,.14);overflow:hidden;position:relative}
 @media (max-width:760px){
- .wrap{padding:0 12px !important}
+ .wrap{padding:0 10px !important}
  .nav{border-radius:20px 20px 0 0}
- .nav-in{padding:12px !important}
- .links a{margin-left:12px}
+ .nav-in{padding:12px 10px !important}
+ .links a{margin-left:10px}
  .arr{display:none}
  .story-tile{flex:0 0 100% !important}
  .works{grid-template-columns:1fr !important}
- .wbody{padding:18px 18px 20px}
- .article{padding:20px 16px 24px;border-radius:18px}
- .article p,.article ul{font-size:15px}
+ .wbody{padding:18px 16px 20px}
  .hero{padding:18px 0 8px}
  .hero h1{font-size:28px}
  .tag{font-size:15px;margin-top:6px}
  .sec{padding:22px 0}
- .sheet{margin:6px 6px 24px !important;border-radius:18px}
+ .sheet{margin:4px 4px 20px !important;border-radius:16px}
  .viewer{width:min(92vw,420px);height:min(86vh,760px);height:min(86dvh,760px);border-radius:24px}
  .wviewer{max-height:88vh;max-height:88dvh}
  .wbig{height:44vh}
@@ -152,26 +142,6 @@ footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
 <div class="wcard" data-work="0"><div class="wimg" style="background-image:url(images/work-1-peach-dawn.jpg)"></div><div class="wbody"><h3>Персиковый рассвет</h3><p>Нежные персиковые тона и цветочные мотивы — идеальны для тёплого настроения каждый день.</p><span class="wlink">Смотреть работу ›</span></div></div>
 <div class="wcard" data-work="1"><div class="wimg" style="background-image:url(images/work-2-aquarelle.jpg)"></div><div class="wbody"><h3>Акварельная дымка</h3><p>Полупрозрачные пастельные переливы — лёгкий и воздушный дизайн для особого образа.</p><span class="wlink">Смотреть работу ›</span></div></div>
 <div class="wcard" data-work="2"><div class="wimg" style="background-image:url(images/work-3-sakura.jpg)"></div><div class="wbody"><h3>Весеннее цветение</h3><p>Веточка сакуры на молочном фоне — самый нежный маникюр этой весны.</p><span class="wlink">Смотреть работу ›</span></div></div>
-</div>
-</div></section>
-
-<!-- Текстовая зона для продвижения: статьи пишутся здесь -->
-<section id="journal" class="sec"><div class="wrap">
-<div class="article">
-<h3>Солнечный маникюр: что это такое</h3>
-<p>Солнечный маникюр — это покрытие в тёплых персиковых, медовых и золотистых оттенках, которое выглядит так, будто на ногти попал утренний свет. Он подойдёт и на каждый день, и под вечерний образ: тонкая золотая пыльца или лёгкий градиент не требуют сложного ухода и хорошо сочетаются с летней и весенней одеждой.</p>
-<p>В студии Sun Nails мы работаем с гель-лаком премиальных марок, стерилизуем инструменты в сухожаре и подбираем оттенок под тон кожи — так покрытие выглядит аккуратно до полного отрастания, обычно 3–4 недели.</p>
-
-<h3>Сколько держится маникюр и как продлить покрытие</h3>
-<p>Средняя стойкость гель-лака — от трёх недель. Чтобы покрытие прожило дольше, мы советуем:</p>
-<ul>
-<li>надевать перчатки при уборке и мытье посуды;</li>
-<li>не использовать ногти как инструмент — открывание банок быстро скалывает покрытие;</li>
-<li>наносить масло на кутикулу через день — кутикула остаётся мягкой, маникюр выглядит свежим.</li>
-</ul>
-
-<h3>Как записаться на маникюр в Санкт-Петербурге</h3>
-<p>Студия Sun Nails находится в Санкт-Петербурге, запись — по телефону и в мессенджерах. В сторис на этой странице мы выкладываем свежие работы: новые оттенки, дизайн и предложения месяца. Нажми на квадратик в ленте — и посмотри, что мы делали на этой неделе.</p>
 </div>
 </div></section>
 
@@ -663,3 +633,4 @@ window.addEventListener('keydown',function(e){
 </script>
 </body>
 </html>
+
