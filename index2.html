@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="description" content="Солнечный маникюр в Санкт-Петербурге — Sun Nails. Нежный френч, персиковые оттенки, уход за ногтями. Запись по телефону и в мессенджерах.">
+<title>Sun Nails — Солнечный маникюр в Санкт-Петербурге</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Verdana,sans-serif;color:#5a3a38;background:#f8ede8 url(images/shitflora.jpg) center/cover fixed no-repeat;min-height:100vh;overflow-x:hidden}
+body.lock{overflow:hidden}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.nav{background:rgba(255,255,255,.8);backdrop-filter:blur(6px);box-shadow:0 2px 14px rgba(214,140,120,.12);position:sticky;top:0;z-index:20;border-radius:30px 30px 0 0}
+.nav-in{display:flex;justify-content:space-between;align-items:center;padding:14px 20px}
+.logo{font-weight:800;font-size:20px;color:#c96a55}
+.links a{margin-left:18px;text-decoration:none;color:#8a5a52;font-weight:600}
+.links a:hover{color:#c96a55}
+.hero{text-align:center;padding:48px 0 26px}
+.hero h1{font-size:42px;color:#c96a55;letter-spacing:1px}
+.tag{margin-top:10px;font-size:18px;color:#8a5a52}
+.sec{padding:34px 0}
+.sec h2{font-size:28px;color:#b3564e;margin-bottom:18px}
+.hint{margin-top:10px;font-size:13px;color:#a97e74;text-align:center}
+.stories-wrap{position:relative}
+.strack{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;cursor:grab;touch-action:pan-y;padding:6px 2px 14px;user-select:none}
+.strack::-webkit-scrollbar{display:none}
+.strack.dragging{cursor:grabbing}
+.story-tile{flex:0 0 calc((100% - 32px)/3);aspect-ratio:1/1;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(214,140,120,.18);cursor:pointer;background:rgba(255,255,255,.55)}
+.story-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .45s}
+.story-tile:hover img{transform:scale(1.06)}
+.tile-info{position:absolute;left:0;right:0;bottom:0;padding:12px 14px;background:linear-gradient(transparent,rgba(90,50,50,.55));color:#fff;font-weight:600;display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.tile-info i{font-style:normal;font-size:13px;opacity:.92;white-space:nowrap}
+/* Стрелки ленты: вытянутые узкие */
+.arr{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:76px;border-radius:16px;border:none;background:rgba(255,255,255,.92);color:#b3564e;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(180,110,90,.25);z-index:5}
+#sPrev{left:-18px}
+#sNext{right:-18px}
+.arr:hover{background:#fff}
+.arr:active{background:#ffe9e0}
+.works{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.wcard{background:rgba(255,255,255,.78);border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(214,140,120,.16);cursor:pointer;transition:transform .3s,box-shadow .3s}
+.wcard:hover{transform:translateY(-6px);box-shadow:0 14px 32px rgba(214,140,120,.26)}
+.wimg{height:210px;background-size:cover;background-position:center;transition:transform .45s}
+.wcard:hover .wimg{transform:scale(1.05)}
+.wbody{padding:20px 24px 24px}
+.wbody h3{color:#b3564e;margin-bottom:10px;font-size:19px}
+.wbody p{font-size:15px;color:#8a5a52;line-height:1.65}
+.wlink{display:inline-block;margin-top:14px;color:#c96a55;font-weight:700;font-size:14px}
+/* Текстовая зона под статьями: широкие поля от краёв */
+.article{max-width:800px;margin:0 auto;padding:26px 34px 30px;background:rgba(255,255,255,.78);border-radius:22px;box-shadow:0 8px 24px rgba(214,140,120,.16)}
+.article h3{color:#b3564e;font-size:20px;margin:22px 0 10px}
+.article h3:first-of-type{margin-top:0}
+.article p{font-size:16px;color:#6e4640;line-height:1.75;margin-bottom:14px}
+.article ul{margin:0 0 14px 20px;color:#6e4640;font-size:16px;line-height:1.75}
+.article li{margin-bottom:6px}
+.ovl{position:fixed;inset:0;display:none;z-index:50}
+.ovl.open{display:block}
+.ovl-bg{position:absolute;inset:0;background:rgba(40,15,15,.55);opacity:0;transition:opacity .35s}
+.ovl.show .ovl-bg{opacity:1}
+.viewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(420px,92vw);height:min(88vh,760px);border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s}
+.ovl.show .viewer{transform:translate(-50%,-50%) scale(1);opacity:1}
+/* Кадры сторис: transform-слайдер, свайп мышью и пальцем */
+.slides{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.slides.grabbing{cursor:grabbing}
+.sf{display:flex;height:100%;will-change:transform}
+.slide{position:relative;flex:0 0 100%;height:100%;overflow:hidden;background:#fff}
+.slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none;will-change:transform}
+.prog{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:5px;z-index:3}
+.seg{flex:1;height:3px;background:rgba(255,255,255,.45);border-radius:3px;overflow:hidden}
+.seg b{display:block;height:100%;width:0;background:#fff;transition:width .2s}
+.seg.done b{width:100%}
+.cap{position:absolute;bottom:74px;left:16px;right:16px;z-index:3;color:#fff;font-weight:700;font-size:18px;text-shadow:0 1px 8px rgba(90,40,40,.55);pointer-events:none}
+.cta{position:absolute;bottom:16px;left:16px;right:16px;z-index:4;background:linear-gradient(135deg,#ff9a8a,#ffb199);color:#fff;text-align:center;padding:13px;border-radius:14px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(220,120,100,.35)}
+.xbtn{position:absolute;top:12px;right:12px;z-index:6;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.85);color:#7a4a44;font-size:16px;cursor:pointer}
+/* Значок «на весь экран» — правый нижний угол окна сторис */
+.expBtn{position:absolute;bottom:84px;right:16px;z-index:5;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:#b3564e;cursor:pointer;box-shadow:0 3px 10px rgba(180,110,90,.35);display:flex;align-items:center;justify-content:center;padding:0}
+.expBtn svg{width:20px;height:20px}
+.expBtn:hover{background:#fff}
+/* Полноэкранный просмотр */
+.fs{position:fixed;inset:0;z-index:100;display:none;background:rgba(22,9,9,.94)}
+.fs.open{display:flex;align-items:center;justify-content:center}
+.fs img{max-width:96vw;max-height:96vh;object-fit:contain;will-change:transform;touch-action:none}
+.fs .xbtn{position:absolute;top:12px;right:12px;z-index:2}
+.wviewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(860px,94vw);max-height:90vh;border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s;display:flex;flex-direction:column}
+.ovl.show .wviewer{transform:translate(-50%,-50%) scale(1);opacity:1}
+.wbig{height:54vh;position:relative;overflow:hidden;background:#eee;flex:none}
+.wbig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-select:none;will-change:transform;pointer-events:none}
+/* Значок в фото работ — правый нижний угол фото */
+.wbig .expBtn{bottom:12px;right:12px}
+.winfo{padding:20px 24px 24px;overflow:auto}
+.winfo h3{color:#b3564e;margin-bottom:10px;font-size:22px}
+.winfo p{color:#8a5a52;line-height:1.6}
+.cta-static{display:block;margin-top:18px;background:linear-gradient(135deg,#ff9a8a,#ffb199);color:#fff;text-align:center;padding:13px;border-radius:14px;font-weight:700;text-decoration:none}
+.contacts{text-align:center;padding:40px 0 60px}
+.contacts p{margin:10px 0 18px;color:#8a5a52}
+.cta.big{position:static;display:inline-block;padding:14px 34px}
+footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
+.sheet{max-width:1060px;margin:28px auto 48px;background:rgba(255,252,248,.93);border-radius:30px;box-shadow:0 18px 50px rgba(90,40,40,.22),0 6px 18px rgba(90,40,40,.14);overflow:hidden;position:relative}
+@media (max-width:760px){
+ .wrap{padding:0 12px !important}
+ .nav{border-radius:20px 20px 0 0}
+ .nav-in{padding:12px !important}
+ .links a{margin-left:12px}
+ .arr{display:none}
+ .story-tile{flex:0 0 100% !important}
+ .works{grid-template-columns:1fr !important}
+ .wbody{padding:18px 18px 20px}
+ .article{padding:20px 16px 24px;border-radius:18px}
+ .article p,.article ul{font-size:15px}
+ .hero{padding:18px 0 8px}
+ .hero h1{font-size:28px}
+ .tag{font-size:15px;margin-top:6px}
+ .sec{padding:22px 0}
+ .sheet{margin:6px 6px 24px !important;border-radius:18px}
+ .viewer{width:min(92vw,420px);height:min(86vh,760px);height:min(86dvh,760px);border-radius:24px}
+ .wviewer{max-height:88vh;max-height:88dvh}
+ .wbig{height:44vh}
+}
+</style>
+</head>
+<body>
+<div class="sheet" style="background:#fff8f2 url(images/centr.jpg) center/cover no-repeat">
+<nav class="nav"><div class="nav-in" style="max-width:960px;margin:0 auto">
+<div class="logo">☀ Sun Nails</div>
+<div class="links"><a href="#stories">Сторис</a><a href="#works">Работы</a><a href="#contacts">Контакты</a></div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+<h1>☀ Sun Nails</h1>
+<p class="tag">Солнечный маникюр — <b>блистай, ты прекрасна</b></p>
+</div></header>
+
+<section id="stories" class="sec"><div class="wrap">
+<h2>Сторис</h2>
+<div class="stories-wrap">
+<button class="arr" id="sPrev" aria-label="назад">‹</button>
+<div class="strack" id="strack">
+<div class="story-tile" data-story="0"><img src="images/story-1-novinki.jpg" alt="Новинки сезона"><div class="tile-info"><span>✨ Новинки сезона</span><i>Смотреть ›</i></div></div>
+<div class="story-tile" data-story="1"><img src="images/story-2-french.jpg" alt="Нежный френч"><div class="tile-info"><span>🌸 Нежный френч</span><i>Смотреть ›</i></div></div>
+<div class="story-tile" data-story="2"><img src="images/story-3-peaches.jpg" alt="Персики и золото"><div class="tile-info"><span>🍑 Персики и золото</span><i>Смотреть ›</i></div></div>
+<div class="story-tile" data-story="3"><img src="images/story-4-morning.jpg" alt="Утренний лайт"><div class="tile-info"><span>🌅 Утренний лайт</span><i>Смотреть ›</i></div></div>
+<div class="story-tile" data-story="4"><img src="images/story-5-shimmer.jpg" alt="Блеск и шиммер"><div class="tile-info"><span>💎 Блеск и шиммер</span><i>Смотреть ›</i></div></div>
+</div>
+<button class="arr" id="sNext" aria-label="вперёд">›</button>
+</div>
+<p class="hint">Листайте ленту — и нажмите на квадратик, чтобы посмотреть сторис</p>
+</div></section>
+
+<section id="works" class="sec"><div class="wrap">
+<h2>Наши работы</h2>
+<div class="works">
+<div class="wcard" data-work="0"><div class="wimg" style="background-image:url(images/work-1-peach-dawn.jpg)"></div><div class="wbody"><h3>Персиковый рассвет</h3><p>Нежные персиковые тона и цветочные мотивы — идеальны для тёплого настроения каждый день.</p><span class="wlink">Смотреть работу ›</span></div></div>
+<div class="wcard" data-work="1"><div class="wimg" style="background-image:url(images/work-2-aquarelle.jpg)"></div><div class="wbody"><h3>Акварельная дымка</h3><p>Полупрозрачные пастельные переливы — лёгкий и воздушный дизайн для особого образа.</p><span class="wlink">Смотреть работу ›</span></div></div>
+<div class="wcard" data-work="2"><div class="wimg" style="background-image:url(images/work-3-sakura.jpg)"></div><div class="wbody"><h3>Весеннее цветение</h3><p>Веточка сакуры на молочном фоне — самый нежный маникюр этой весны.</p><span class="wlink">Смотреть работу ›</span></div></div>
+</div>
+</div></section>
+
+<!-- Текстовая зона для продвижения: статьи пишутся здесь -->
+<section id="journal" class="sec"><div class="wrap">
+<div class="article">
+<h3>Солнечный маникюр: что это такое</h3>
+<p>Солнечный маникюр — это покрытие в тёплых персиковых, медовых и золотистых оттенках, которое выглядит так, будто на ногти попал утренний свет. Он подойдёт и на каждый день, и под вечерний образ: тонкая золотая пыльца или лёгкий градиент не требуют сложного ухода и хорошо сочетаются с летней и весенней одеждой.</p>
+<p>В студии Sun Nails мы работаем с гель-лаком премиальных марок, стерилизуем инструменты в сухожаре и подбираем оттенок под тон кожи — так покрытие выглядит аккуратно до полного отрастания, обычно 3–4 недели.</p>
+
+<h3>Сколько держится маникюр и как продлить покрытие</h3>
+<p>Средняя стойкость гель-лака — от трёх недель. Чтобы покрытие прожило дольше, мы советуем:</p>
+<ul>
+<li>надевать перчатки при уборке и мытье посуды;</li>
+<li>не использовать ногти как инструмент — открывание банок быстро скалывает покрытие;</li>
+<li>наносить масло на кутикулу через день — кутикула остаётся мягкой, маникюр выглядит свежим.</li>
+</ul>
+
+<h3>Как записаться на маникюр в Санкт-Петербурге</h3>
+<p>Студия Sun Nails находится в Санкт-Петербурге, запись — по телефону и в мессенджерах. В сторис на этой странице мы выкладываем свежие работы: новые оттенки, дизайн и предложения месяца. Нажми на квадратик в ленте — и посмотри, что мы делали на этой неделе.</p>
+</div>
+</div></section>
+
+<section id="contacts" class="sec contacts"><div class="wrap">
+<h2>Контакты</h2>
+<p>Запись по телефону и в мессенджерах · Санкт-Петербург</p>
+<a class="cta big" href="https://sunails.ru">sunails.ru</a>
+</div></section>
+<footer>© Sun Nails — солнечный маникюр</footer>
+</div>
+
+<div class="ovl" id="storyOvl">
+<div class="ovl-bg" data-close="1"></div>
+<div class="viewer" id="storyView">
+<div class="prog" id="prog"></div>
+<button class="xbtn" data-close="1">✕</button>
+<div class="slides" id="slides"><div class="sf" id="sf"></div></div>
+<button class="expBtn" id="expStory" title="На весь экран"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+<div class="cap" id="cap"></div>
+<a class="cta" href="#contacts" id="storyCta">Записаться ›</a>
+</div>
+</div>
+
+<div class="ovl" id="workOvl">
+<div class="ovl-bg" data-close="1"></div>
+<div class="wviewer">
+<button class="xbtn" data-close="1">✕</button>
+<div class="wbig" id="wBig">
+<img id="wImg" alt="">
+<button class="expBtn" id="expWork" title="На весь экран"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+</div>
+<div class="winfo"><h3 id="wTitle"></h3><p id="wText"></p><a class="cta-static" href="#contacts" id="workCta">Записаться ›</a></div>
+</div>
+</div>
+
+<div class="fs" id="fsOvl">
+<img id="fsImg" alt="">
+<button class="xbtn" id="fsClose" title="Закрыть">✕</button>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   НАСТРОЙКА СКОРОСТИ АВТОПРОКРУТКИ ЛЕНЫ СТОРИС (только телефон)
+   AUTO_SPEED — пикселей в СЕКУНДУ:
+     20–40 — очень медленно, 60 — средне, 120 — быстро
+   AUTO_PAUSE_MS — пауза (мс) после касания пальцем
+   ============================================================ */
+var AUTO_SPEED=30;
+var AUTO_PAUSE_MS=2500;
+var IS_MOBILE=window.matchMedia('(max-width:760px)');
+
+var STORIES=[
+{title:'Новинки сезона',slides:['images/story-1-slide-1.jpg','images/story-1-slide-2.jpg']},
+{title:'Нежный френч',slides:['images/story-2-slide-1.jpg','images/story-2-slide-2.jpg']},
+{title:'Персики и золото',slides:['images/story-3-slide-1.jpg','images/story-3-slide-2.jpg']},
+{title:'Утренний лайт',slides:['images/story-4-slide-1.jpg','images/story-4-slide-2.jpg']},
+{title:'Блеск и шиммер',slides:['images/story-5-slide-1.jpg','images/story-5-slide-2.jpg']}
+];
+var WORKS=[
+{title:'Персиковый рассвет',text:'Нежные персиковые тона и цветочные мотивы — идеальны для тёплого настроения каждый день.',img:'images/work-1-peach-dawn.jpg'},
+{title:'Акварельная дымка',text:'Полупрозрачные пастельные переливы — лёгкий и воздушный дизайн для особого образа.',img:'images/work-2-aquarelle.jpg'},
+{title:'Весеннее цветение',text:'Веточка сакуры на молочном фоне — самый нежный маникюр этой весны.',img:'images/work-3-sakura.jpg'}
+];
+
+function setLock(on){document.body.classList.toggle('lock',on);}
+
+/* --- Зум: щипок, перетаскивание, двойной тап --- */
+function makeZoom(box,getImg){
+ var st={z:1,x:0,y:0,img:null};
+ function reset(){
+  if(st.img){st.img.style.transition='transform .25s ease-out';st.img.style.transform='';}
+  st.z=1;st.x=0;st.y=0;st.img=null;
+ }
+ function apply(){
+  if(st.img){st.img.style.transition='none';st.img.style.transform='translate('+st.x+'px,'+st.y+'px) scale('+st.z+')';}
+ }
+ function clamp(){
+  if(!st.img)return;
+  var r=box.getBoundingClientRect();
+  var ox=Math.max(0,(r.width*st.z-r.width)/2),oy=Math.max(0,(r.height*st.z-r.height)/2);
+  st.x=Math.max(-ox,Math.min(ox,st.x));st.y=Math.max(-oy,Math.min(oy,st.y));
+ }
+ function panBy(dx,dy){st.x+=dx;st.y+=dy;clamp();apply();}
+ function zoomTo(z,px,py){
+  st.z=Math.max(1,Math.min(4,z));
+  if(st.z<=1.01){reset();return;}
+  if(px!=null){
+   var r=box.getBoundingClientRect();
+   st.x=-(px-r.left-r.width/2)*(st.z-1);
+   st.y=-(py-r.top-r.height/2)*(st.z-1);
+  }
+  clamp();apply();
+ }
+ function bind(){st.img=getImg()||st.img;}
+ return{st:st,reset:reset,apply:apply,clamp:clamp,panBy:panBy,zoomTo:zoomTo,bind:bind};
+}
+function bindPinch(box,zm){
+ var pd=0,pz=1,px0=0,py0=0,ltT=0,ltX=0,ltY=0,panX=0,panY=0;
+ box.addEventListener('touchstart',function(e){
+  if(e.touches.length===2){
+   e.preventDefault();
+   var a=e.touches[0],b=e.touches[1];
+   pd=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+   pz=zm.st.z;zm.bind();
+   var r=box.getBoundingClientRect();
+   var cx=(a.clientX+b.clientX)/2,cy=(a.clientY+b.clientY)/2;
+   px0=(cx-r.left-r.width/2-zm.st.x)/pz;
+   py0=(cy-r.top-r.height/2-zm.st.y)/pz;
+   return;
+  }
+  if(e.touches.length===1&&zm.st.z>1){panX=e.touches[0].clientX;panY=e.touches[0].clientY;}
+ },{passive:false});
+ box.addEventListener('touchmove',function(e){
+  if(e.touches.length===2&&pd){
+   e.preventDefault();
+   var a=e.touches[0],b=e.touches[1];
+   var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+   zm.st.z=Math.max(1,Math.min(4,pz*d/pd));
+   if(zm.st.z<=1.01){zm.reset();}
+   else{
+    var r=box.getBoundingClientRect();
+    zm.st.x=((a.clientX+b.clientX)/2-r.left-r.width/2)-zm.st.z*px0;
+    zm.st.y=((a.clientY+b.clientY)/2-r.top-r.height/2)-zm.st.z*py0;
+    zm.clamp();zm.apply();
+   }
+   return;
+  }
+  if(e.touches.length===1&&zm.st.z>1&&pd===0){
+   e.preventDefault();
+   zm.panBy(e.touches[0].clientX-panX,e.touches[0].clientY-panY);
+   panX=e.touches[0].clientX;panY=e.touches[0].clientY;
+  }
+ },{passive:false});
+ box.addEventListener('touchend',function(e){
+  if(e.touches.length===2)return;
+  if(e.touches.length===1){pd=0;panX=e.touches[0].clientX;panY=e.touches[0].clientY;return;}
+  pd=0;
+  if(e.changedTouches.length===1&&zm.st.z<=1.01){
+   var t=performance.now();
+   var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
+   if(t-ltT<320&&Math.hypot(x-ltX,y-ltY)<26){
+    zm.bind();zm.zoomTo(2.5,x,y);ltT=0;e.preventDefault();
+   }else{ltT=t;ltX=x;ltY=y;}
+  }
+ },{passive:false});
+}
+
+/* --- Лента сторис на главной --- */
+var track=document.getElementById('strack');
+var tiles=Array.prototype.slice.call(track.querySelectorAll('.story-tile'));
+var step=216,anim=null,snapT=null,moved=false,dragging=false;
+function calcStep(){
+ var r=tiles[0].getBoundingClientRect();
+ var gap=parseFloat(getComputedStyle(track).gap)||16;
+ step=r.width+gap;
+}
+function maxScroll(){return track.scrollWidth-track.clientWidth;}
+function animateTo(target){
+ if(anim)cancelAnimationFrame(anim);
+ var start=track.scrollLeft,d=target-start;
+ if(Math.abs(d)<2){track.scrollLeft=target;anim=null;return;}
+ var t0=performance.now(),dur=Math.min(700,250+Math.abs(d));
+ function fr(t){
+  var p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
+  track.scrollLeft=start+d*e;
+  if(p<1)anim=requestAnimationFrame(fr);else anim=null;
+ }
+ anim=requestAnimationFrame(fr);
+}
+function go(dir){
+ calcStep();
+ var snapped=Math.round(track.scrollLeft/step)*step;
+ var target=Math.max(0,Math.min(maxScroll(),snapped+dir*step));
+ animateTo(target);
+}
+document.getElementById('sPrev').addEventListener('click',function(){go(-1);});
+document.getElementById('sNext').addEventListener('click',function(){go(1);});
+
+/* --- Автопрокрутка ленты (только телефон) --- */
+var overlayOpen=false,pausedUntil=0,autoT=null,lastAutoT=0;
+function autoLoop(t){
+ if(!IS_MOBILE.matches){autoT=null;lastAutoT=0;return;}
+ if(!lastAutoT)lastAutoT=t;
+ var dt=t-lastAutoT;lastAutoT=t;
+ if(!dragging&&!anim&&!overlayOpen&&performance.now()>=pausedUntil){
+  var max=maxScroll();
+  if(max<=1){track.scrollLeft=0;}
+  else if(track.scrollLeft>=max-1){track.scrollLeft=0;}
+  else track.scrollLeft=Math.min(max,track.scrollLeft+AUTO_SPEED*dt/1000);
+ }
+ autoT=requestAnimationFrame(autoLoop);
+}
+if(IS_MOBILE.matches)autoT=requestAnimationFrame(autoLoop);
+try{IS_MOBILE.addEventListener('change',function(e){if(e.matches&&!autoT)autoT=requestAnimationFrame(autoLoop);});}catch(err){}
+function touchPause(){pausedUntil=performance.now()+AUTO_PAUSE_MS;}
+
+var downX=0,downS=0,vel=0,lastX=0,lastT=0;
+track.addEventListener('pointerdown',function(e){
+ downX=e.clientX;downS=track.scrollLeft;dragging=true;moved=false;vel=0;
+ lastX=e.clientX;lastT=performance.now();
+ if(anim){cancelAnimationFrame(anim);anim=null;}
+ track.classList.add('dragging');
+ touchPause();
+});
+window.addEventListener('pointermove',function(e){
+ if(!dragging)return;
+ var dx=e.clientX-downX;
+ if(Math.abs(dx)>8)moved=true;
+ if(!moved)return;
+ if(e.cancelable)e.preventDefault();
+ track.scrollLeft=downS-dx;
+ var now=performance.now();
+ vel=(e.clientX-lastX)/Math.max(1,now-lastT);
+ lastX=e.clientX;lastT=now;
+});
+window.addEventListener('pointerup',function(e){
+ if(!dragging)return;
+ dragging=false;track.classList.remove('dragging');
+ touchPause();
+ if(moved){
+  calcStep();
+  var raw=downS-(e.clientX-downX)-vel*160;
+  var target=Math.max(0,Math.min(maxScroll(),Math.round(raw/step)*step));
+  animateTo(target);
+ }
+});
+track.addEventListener('pointercancel',function(){dragging=false;track.classList.remove('dragging');touchPause();});
+track.addEventListener('dragstart',function(e){e.preventDefault();});
+track.addEventListener('click',function(e){if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+track.addEventListener('wheel',function(e){
+ var max=maxScroll();
+ if(max<=1)return;
+ var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+ var dir=d>0?1:-1;
+ if((dir>0&&track.scrollLeft<max-1)||(dir<0&&track.scrollLeft>1)){
+  e.preventDefault();
+  track.scrollLeft+=d;
+  if(snapT)clearTimeout(snapT);
+  snapT=setTimeout(function(){calcStep();animateTo(Math.round(track.scrollLeft/step)*step);},150);
+ }
+},{passive:false});
+track.addEventListener('scroll',function(){
+ if(dragging||anim)return;
+ if(snapT)clearTimeout(snapT);
+ snapT=setTimeout(function(){
+  if(dragging||anim)return;
+  calcStep();
+  var t=Math.round(track.scrollLeft/step)*step;
+  if(t!==track.scrollLeft)animateTo(t);
+ },170);
+});
+
+/* --- Просмотр сторис: клик по плитке открывает окно --- */
+var so=document.getElementById('storyOvl'),sv=document.getElementById('storyView');
+var sl=document.getElementById('slides'),sf=document.getElementById('sf'),pg=document.getElementById('prog');
+var cap=document.getElementById('cap');
+var curStory=0,fIdx=0,fW=0,fP=null,fPinch=false,wAcc=0;
+var sZm=makeZoom(sl,function(){var s=sf.children[fIdx];return s?s.querySelector('img'):null;});
+bindPinch(sl,sZm);
+
+function fWcalc(){fW=sl.clientWidth||1;}
+function updSegs(){
+ var segs=pg.children;
+ for(var j=0;j<segs.length;j++)segs[j].className='seg'+(j<=fIdx?' done':'');
+}
+function loadNeighbors(i){
+ var n=STORIES[curStory].slides.length;
+ [i-1,i,i+1].forEach(function(k){
+  if(k<0||k>=n)return;
+  var img=sf.children[k].querySelector('img');
+  if(img&&!img.getAttribute('src'))img.src=img.getAttribute('data-src');
+ });
+}
+function sImgEl(){var s=sf.children[fIdx];return s?s.querySelector('img'):null;}
+function fGo(i){
+ fIdx=Math.max(0,Math.min(STORIES[curStory].slides.length-1,i));
+ sf.style.transition='';
+ sf.style.transform='translateX('+(-fIdx*fW)+'px)';
+ sZm.reset();
+ loadNeighbors(fIdx);
+ updSegs();
+}
+function openStory(i,fromEl){
+ overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ setLock(true);
+ sZm.reset();
+ curStory=i;fIdx=0;fP=null;fPinch=false;wAcc=0;
+ sf.innerHTML='';pg.innerHTML='';
+ STORIES[i].slides.forEach(function(u){
+  var d=document.createElement('div');d.className='slide';
+  var img=document.createElement('img');
+  img.setAttribute('data-src',u);img.alt='';
+  d.appendChild(img);sf.appendChild(d);
+  var s=document.createElement('div');s.className='seg';s.innerHTML='<b></b>';pg.appendChild(s);
+ });
+ cap.textContent=STORIES[i].title;
+ if(fromEl){
+  var r=fromEl.getBoundingClientRect();
+  var ox=Math.max(8,Math.min(92,(r.left+r.width/2)/window.innerWidth*100));
+  var oy=Math.max(8,Math.min(92,(r.top+r.height/2)/window.innerHeight*100));
+  sv.style.transformOrigin=ox+'% '+oy+'%';
+ }
+ so.classList.add('open');
+ requestAnimationFrame(function(){requestAnimationFrame(function(){
+  fWcalc();
+  fGo(0);
+  so.classList.add('show');
+ });});
+}
+tiles.forEach(function(t,i){
+ t.addEventListener('click',function(){openStory(i,t);});
+});
+
+/* Свайп по кадрам: мышь и палец через pointer-события */
+sl.addEventListener('pointerdown',function(e){
+ if(!so.classList.contains('show')||fPinch)return;
+ if(e.pointerType==='mouse'&&e.button!==0)return;
+ e.preventDefault();
+ fP={id:e.pointerId,x0:e.clientX,y0:e.clientY,dx:0,lx:e.clientX,ly:e.clientY,locked:false,mode:sZm.st.z>1?'pan':'drag'};
+ try{sl.setPointerCapture(e.pointerId);}catch(err){}
+});
+sl.addEventListener('pointermove',function(e){
+ if(!fP||e.pointerId!==fP.id||fPinch)return;
+ var dx=e.clientX-fP.x0,dy=e.clientY-fP.y0;
+ if(!fP.locked){
+  if(Math.abs(dx)<8&&Math.abs(dy)<8)return;
+  if(Math.abs(dy)>Math.abs(dx)*1.3){fP=null;return;}
+  fP.locked=true;
+  sl.classList.add('grabbing');
+ }
+ fP.dx=dx;
+ if(e.cancelable)e.preventDefault();
+ if(fP.mode==='pan'){
+  sZm.panBy(e.clientX-fP.lx,e.clientY-fP.ly);
+  fP.lx=e.clientX;fP.ly=e.clientY;
+ }else{
+  sf.style.transition='none';
+  sf.style.transform='translateX('+(-(fIdx*fW)+(e.clientX-fP.x0))+'px)';
+ }
+});
+function fEnd(e,cancelled){
+ if(!fP||e.pointerId!==fP.id)return;
+ var p=fP;fP=null;
+ sl.classList.remove('grabbing');
+ if(!p.locked)return;
+ if(p.mode==='pan')return;
+ if(cancelled){fGo(fIdx);return;}
+ var w=fW||1,ni=fIdx;
+ if(p.dx<-w*0.22)ni=fIdx+1;
+ else if(p.dx>w*0.22)ni=fIdx-1;
+ fGo(ni);
+}
+sl.addEventListener('pointerup',function(e){fEnd(e,false);});
+sl.addEventListener('pointercancel',function(e){fEnd(e,true);});
+sl.addEventListener('dragstart',function(e){e.preventDefault();});
+sl.addEventListener('wheel',function(e){
+ if(!so.classList.contains('open'))return;
+ e.preventDefault();
+ wAcc+=e.deltaY;
+ if(wAcc>60){wAcc=0;fGo(fIdx+1);}
+ else if(wAcc<-60){wAcc=0;fGo(fIdx-1);}
+},{passive:false});
+
+document.getElementById('storyCta').addEventListener('click',function(e){
+ e.preventDefault();closeOv(so);
+ setTimeout(function(){document.getElementById('contacts').scrollIntoView({behavior:'smooth'});},340);
+});
+
+/* --- Полноэкранный просмотр --- */
+var fsO=document.getElementById('fsOvl'),fsImg=document.getElementById('fsImg');
+var fsZ=makeZoom(fsO,function(){return fsImg;});
+bindPinch(fsO,fsZ);
+function openFS(src){
+ if(!src)return;
+ fsImg.src=src;
+ fsZ.reset();
+ fsO.classList.add('open');
+}
+function closeFS(){
+ fsO.classList.remove('open');
+ fsZ.reset();
+ fsImg.src='';
+}
+document.getElementById('fsClose').addEventListener('click',closeFS);
+fsO.addEventListener('click',function(e){if(e.target===fsO)closeFS();});
+fsO.addEventListener('wheel',function(e){
+ e.preventDefault();
+ fsZ.zoomTo(fsZ.st.z*(e.deltaY<0?1.15:0.87));
+},{passive:false});
+fsO.addEventListener('dblclick',function(e){
+ fsZ.st.z>1.01?fsZ.zoomTo(1):fsZ.zoomTo(2.5,e.clientX,e.clientY);
+});
+
+/* Значок в правом нижнем углу окна сторис — открывает текущий кадр на весь экран.
+   Обычный клик по фото ничего не открывает. */
+document.getElementById('expStory').addEventListener('click',function(e){
+ e.stopPropagation();
+ var im=sImgEl();
+ if(im)openFS(im.getAttribute('data-src')||im.src);
+});
+
+/* --- Просмотр работ --- */
+var wo=document.getElementById('workOvl');
+var wBig=document.getElementById('wBig'),wImg=document.getElementById('wImg');
+var wZm=makeZoom(wBig,function(){return wImg;});
+bindPinch(wBig,wZm);
+function openWork(i,fromEl){
+ overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ setLock(true);
+ wZm.reset();
+ wImg.src=WORKS[i].img;
+ document.getElementById('wTitle').textContent=WORKS[i].title;
+ document.getElementById('wText').textContent=WORKS[i].text;
+ if(fromEl){
+  var r=fromEl.getBoundingClientRect();
+  var ox=Math.max(8,Math.min(92,(r.left+r.width/2)/window.innerWidth*100));
+  var oy=Math.max(8,Math.min(92,(r.top+r.height/2)/window.innerHeight*100));
+  wo.querySelector('.wviewer').style.transformOrigin=ox+'% '+oy+'%';
+ }
+ wo.classList.add('open');
+ requestAnimationFrame(function(){requestAnimationFrame(function(){wo.classList.add('show');});});
+}
+document.querySelectorAll('.wcard').forEach(function(c,i){
+ c.addEventListener('click',function(){openWork(i,c);});
+});
+document.getElementById('workCta').addEventListener('click',function(e){
+ e.preventDefault();closeOv(wo);
+ setTimeout(function(){document.getElementById('contacts').scrollIntoView({behavior:'smooth'});},340);
+});
+/* Значок на фото работ — на весь экран */
+document.getElementById('expWork').addEventListener('click',function(e){
+ e.stopPropagation();
+ openFS(wImg.getAttribute('src'));
+});
+
+/* --- Закрытие: блокировка страницы снимается сразу --- */
+function closeOv(o){
+ o.classList.remove('show');
+ overlayOpen=false;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ setLock(false);
+ sZm.reset();wZm.reset();
+ setTimeout(function(){o.classList.remove('open');},320);
+}
+document.querySelectorAll('[data-close]').forEach(function(el){
+ el.addEventListener('click',function(){closeOv(el.closest('.ovl'));});
+});
+
+/* Жесты поверх оверлея не прокручивают страницу.
+   Исключения: кадры сторис, фото работ, текст работ. */
+[so,wo].forEach(function(o){
+ o.addEventListener('touchmove',function(e){
+  if(e.target.closest&&e.target.closest('.slides'))return;
+  if(e.target.closest&&e.target.closest('.wbig'))return;
+  if(e.target.closest&&e.target.closest('.winfo'))return;
+  e.preventDefault();
+ },{passive:false});
+});
+
+/* Сайт не увеличивается случайным щипком */
+document.addEventListener('gesturestart',function(e){e.preventDefault();},{passive:false});
+document.addEventListener('touchmove',function(e){
+ if(e.touches.length>1){
+  if(e.target.closest&&(e.target.closest('#storyView')||e.target.closest('#wBig')||e.target.closest('#fsOvl')))return;
+  e.preventDefault();
+ }
+},{passive:false});
+
+window.addEventListener('resize',function(){
+ if(so.classList.contains('open')){fWcalc();fGo(fIdx);}
+});
+
+/* Клавиатура: стрелки листают кадры, Esc закрывает */
+window.addEventListener('keydown',function(e){
+ if(fsO.classList.contains('open')){
+  if(e.key==='Escape'){closeFS();e.preventDefault();}
+  return;
+ }
+ if(so.classList.contains('open')){
+  if(e.key==='Escape'){closeOv(so);return;}
+  if(e.key==='ArrowRight'){e.preventDefault();fGo(fIdx+1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();fGo(fIdx-1);}
+ }
+ if(e.key==='Escape'&&wo.classList.contains('open'))closeOv(wo);
+});
+})();
+</script>
+</body>
+</html>
