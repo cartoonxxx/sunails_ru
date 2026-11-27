@@ -23,12 +23,10 @@ body.lock{overflow:hidden}
 .story-tile:hover img{transform:scale(1.06)}
 .tile-info{position:absolute;left:0;right:0;bottom:0;padding:12px 14px;background:linear-gradient(transparent,rgba(90,50,50,.55));color:#fff;font-weight:600;display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
 .tile-info i{font-style:normal;font-size:13px;opacity:.92;white-space:nowrap}
-/* --- Стрелки ленты: вытянутые узкие «таблетки» --- */
-.arr{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:76px;border-radius:16px;border:none;background:rgba(255,255,255,.92);color:#b3564e;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(180,110,90,.25);z-index:5}
-#sPrev{left:-18px}
-#sNext{right:-18px}
+.arr{position:absolute;top:36%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:#b3564e;font-size:22px;cursor:pointer;box-shadow:0 4px 14px rgba(180,110,90,.25);z-index:5}
+#sPrev{left:-10px}
+#sNext{right:-10px}
 .arr:hover{background:#fff}
-.arr:active{background:#ffe9e0}
 .works{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
 .wcard{background:rgba(255,255,255,.78);border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(214,140,120,.16);cursor:pointer;transition:transform .3s,box-shadow .3s}
 .wcard:hover{transform:translateY(-6px);box-shadow:0 14px 32px rgba(214,140,120,.26)}
@@ -50,23 +48,16 @@ body.lock{overflow:hidden}
 .slides.grabbing{cursor:grabbing}
 .slide{position:relative;flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;background:#fff;overflow:hidden}
 .slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none;will-change:transform}
-.prog{position:absolute;top:10px;left:56px;right:10px;display:flex;gap:5px;z-index:3}
+.prog{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:5px;z-index:3}
 .seg{flex:1;height:3px;background:rgba(255,255,255,.45);border-radius:3px;overflow:hidden}
 .seg b{display:block;height:100%;width:0;background:#fff;transition:width .2s}
 .seg.done b{width:100%}
 .cap{position:absolute;bottom:74px;left:16px;right:16px;z-index:3;color:#fff;font-weight:700;font-size:18px;text-shadow:0 1px 8px rgba(90,40,40,.55);pointer-events:none}
 .cta{position:absolute;bottom:16px;left:16px;right:16px;z-index:4;background:linear-gradient(135deg,#ff9a8a,#ffb199);color:#fff;text-align:center;padding:13px;border-radius:14px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(220,120,100,.35)}
 .xbtn{position:absolute;top:12px;right:12px;z-index:6;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.85);color:#7a4a44;font-size:16px;cursor:pointer}
-/* --- Лупа (только ПК): миниатюрная кнопка + круглое стекло --- */
-.lens-btn{position:absolute;top:12px;left:12px;z-index:6;width:34px;height:34px;border-radius:10px;border:none;background:rgba(255,255,255,.9);color:#7a4a44;font-size:15px;cursor:pointer;box-shadow:0 3px 10px rgba(180,110,90,.3)}
-.lens-btn:hover{background:#fff}
-.lens-btn.lens-on{background:#c96a55;color:#fff}
-.lens{position:absolute;width:130px;height:130px;border-radius:50%;border:2px solid rgba(255,255,255,.95);box-shadow:0 4px 16px rgba(60,20,20,.4);pointer-events:none;display:none;z-index:7;background-repeat:no-repeat;background-color:#fff}
 .wviewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(860px,94vw);max-height:90vh;border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s;display:flex;flex-direction:column}
 .ovl.show .wviewer{transform:translate(-50%,-50%) scale(1);opacity:1}
-/* --- Фото работ теперь <img>: работает зум и лупа --- */
-.wbig{position:relative;height:54vh;background:#fff;overflow:hidden;flex:none;user-select:none;-webkit-user-select:none;touch-action:pan-y}
-.wbig img{width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none;will-change:transform}
+.wbig{height:54vh;background-size:cover;background-position:center;flex:none}
 .winfo{padding:20px 24px 24px;overflow:auto}
 .winfo h3{color:#b3564e;margin-bottom:10px;font-size:22px}
 .winfo p{color:#8a5a52;line-height:1.6}
@@ -81,7 +72,6 @@ footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
  .wrap{padding:0 16px}
  .nav{border-radius:20px 20px 0 0}
  .arr{display:none}
- .lens-btn{display:none}
  .story-tile{flex:0 0 calc((100% - 16px)/2)}
  .works{grid-template-columns:1fr}
  .hero{padding:18px 0 8px}
@@ -96,5 +86,6 @@ footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
 @media (max-width:480px){
  .story-tile{flex:0 0 100%}
 }
+
 
 
