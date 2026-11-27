@@ -1,7 +1,7 @@
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+*{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Segoe UI',Verdana,sans-serif;color:#5a3a38;background:#f8ede8 url(images/shitflora.jpg) center/cover fixed no-repeat;min-height:100vh;overflow-x:hidden}
-body.lock{overflow:hidden}
+body{font-family:'Segoe UI',Verdana,sans-serif;color:#5a3a38;background:#f8ede8 url(images/shitflora.jpg) center/cover fixed no-repeat;min-height:100vh}
 .wrap{max-width:960px;margin:0 auto;padding:0 20px}
 .nav{background:rgba(255,255,255,.8);backdrop-filter:blur(6px);box-shadow:0 2px 14px rgba(214,140,120,.12);position:sticky;top:0;z-index:20;border-radius:30px 30px 0 0}
 .nav-in{display:flex;justify-content:space-between;align-items:center;padding:14px 20px}
@@ -15,7 +15,7 @@ body.lock{overflow:hidden}
 .sec h2{font-size:28px;color:#b3564e;margin-bottom:18px}
 .hint{margin-top:10px;font-size:13px;color:#a97e74;text-align:center}
 .stories-wrap{position:relative}
-.strack{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;cursor:grab;touch-action:pan-y;padding:6px 2px 14px;user-select:none}
+.strack{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;cursor:grab;touch-action:pan-x;padding:6px 2px 14px;user-select:none}
 .strack::-webkit-scrollbar{display:none}
 .strack.dragging{cursor:grabbing}
 .story-tile{flex:0 0 calc((100% - 32px)/3);aspect-ratio:1/1;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(214,140,120,.18);cursor:pointer;background:rgba(255,255,255,.55)}
@@ -42,17 +42,19 @@ body.lock{overflow:hidden}
 .ovl.show .ovl-bg{opacity:1}
 .viewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(420px,92vw);height:min(88vh,760px);border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s}
 .ovl.show .viewer{transform:translate(-50%,-50%) scale(1);opacity:1}
-/* --- Лента кадров сторис: вся история прокручивается, картинки подгружаются по ходу --- */
-.slides{position:absolute;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;touch-action:pan-x;user-select:none;-webkit-user-select:none}
-.slides::-webkit-scrollbar{display:none}
-.slides.grabbing{cursor:grabbing}
-.slide{position:relative;flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;background:#fff;overflow:hidden}
-.slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none;will-change:transform}
+.slides{position:absolute;inset:0}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .45s;background:#fff center/cover no-repeat}
+.slide.on{opacity:1}
 .prog{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:5px;z-index:3}
 .seg{flex:1;height:3px;background:rgba(255,255,255,.45);border-radius:3px;overflow:hidden}
-.seg b{display:block;height:100%;width:0;background:#fff;transition:width .2s}
+.seg b{display:block;height:100%;width:0;background:#fff}
 .seg.done b{width:100%}
-.cap{position:absolute;bottom:74px;left:16px;right:16px;z-index:3;color:#fff;font-weight:700;font-size:18px;text-shadow:0 1px 8px rgba(90,40,40,.55);pointer-events:none}
+.seg.run b{animation:fillbar 5s linear forwards}
+@keyframes fillbar{to{width:100%}}
+.tapzone{position:absolute;top:15%;bottom:15%;width:50%;z-index:2;cursor:pointer}
+.tzL{left:0}
+.tzR{right:0}
+.cap{position:absolute;bottom:74px;left:16px;right:16px;z-index:3;color:#fff;font-weight:700;font-size:18px;text-shadow:0 1px 8px rgba(90,40,40,.55)}
 .cta{position:absolute;bottom:16px;left:16px;right:16px;z-index:4;background:linear-gradient(135deg,#ff9a8a,#ffb199);color:#fff;text-align:center;padding:13px;border-radius:14px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(220,120,100,.35)}
 .xbtn{position:absolute;top:12px;right:12px;z-index:6;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.85);color:#7a4a44;font-size:16px;cursor:pointer}
 .wviewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(860px,94vw);max-height:90vh;border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s;display:flex;flex-direction:column}
@@ -66,26 +68,21 @@ body.lock{overflow:hidden}
 .contacts p{margin:10px 0 18px;color:#8a5a52}
 .cta.big{position:static;display:inline-block;padding:14px 34px}
 footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
-/* --- Лист бумаги над фоном --- */
-.sheet{max-width:1060px;margin:28px auto 48px;background:rgba(255,252,248,.93);border-radius:30px;box-shadow:0 18px 50px rgba(90,40,40,.22),0 6px 18px rgba(90,40,40,.14);overflow:hidden;position:relative}
 @media (max-width:760px){
- .wrap{padding:0 16px}
  .nav{border-radius:20px 20px 0 0}
- .arr{display:none}
  .story-tile{flex:0 0 calc((100% - 16px)/2)}
  .works{grid-template-columns:1fr}
- .hero{padding:18px 0 8px}
- .hero h1{font-size:28px}
- .tag{font-size:15px;margin-top:6px}
- .sec{padding:22px 0}
- .sheet{margin:12px 14px 28px;border-radius:20px}
- .viewer{width:min(92vw,420px);height:min(86vh,760px);height:min(86dvh,760px);border-radius:24px}
- .wviewer{max-height:88vh;max-height:88dvh}
- .wbig{height:44vh}
+ .hero h1{font-size:32px}
 }
 @media (max-width:480px){
- .story-tile{flex:0 0 100%}
+ .story-tile{flex:0 0 78%}
 }
+
+/* --- Лист бумаги над фоном --- */
+.sheet{max-width:1060px;margin:28px auto 48px;background:rgba(255,252,248,.93);border-radius:30px;
+ box-shadow:0 18px 50px rgba(90,40,40,.22),0 6px 18px rgba(90,40,40,.14);overflow:hidden;position:relative}
+@media (max-width:760px){.sheet{margin:12px 10px 28px;border-radius:20px}}
+
 
 
 
