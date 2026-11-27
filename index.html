@@ -2,12 +2,109 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Sun Nails — Солнечный маникюр</title>
-<link rel="stylesheet" href="style.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Verdana,sans-serif;color:#5a3a38;background:#f8ede8 url(images/shitflora.jpg) center/cover fixed no-repeat;min-height:100vh;overflow-x:hidden}
+body.lock{overflow:hidden}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.nav{background:rgba(255,255,255,.8);backdrop-filter:blur(6px);box-shadow:0 2px 14px rgba(214,140,120,.12);position:sticky;top:0;z-index:20;border-radius:30px 30px 0 0}
+.nav-in{display:flex;justify-content:space-between;align-items:center;padding:14px 20px}
+.logo{font-weight:800;font-size:20px;color:#c96a55}
+.links a{margin-left:18px;text-decoration:none;color:#8a5a52;font-weight:600}
+.links a:hover{color:#c96a55}
+.hero{text-align:center;padding:48px 0 26px}
+.hero h1{font-size:42px;color:#c96a55;letter-spacing:1px}
+.tag{margin-top:10px;font-size:18px;color:#8a5a52}
+.sec{padding:34px 0}
+.sec h2{font-size:28px;color:#b3564e;margin-bottom:18px}
+.hint{margin-top:10px;font-size:13px;color:#a97e74;text-align:center}
+.stories-wrap{position:relative}
+.strack{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;cursor:grab;touch-action:pan-y;padding:6px 2px 14px;user-select:none}
+.strack::-webkit-scrollbar{display:none}
+.strack.dragging{cursor:grabbing}
+.story-tile{flex:0 0 calc((100% - 32px)/3);aspect-ratio:1/1;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(214,140,120,.18);cursor:pointer;background:rgba(255,255,255,.55)}
+.story-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .45s}
+.story-tile:hover img{transform:scale(1.06)}
+.tile-info{position:absolute;left:0;right:0;bottom:0;padding:12px 14px;background:linear-gradient(transparent,rgba(90,50,50,.55));color:#fff;font-weight:600;display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.tile-info i{font-style:normal;font-size:13px;opacity:.92;white-space:nowrap}
+/* Стрелки ленты: вытянутые узкие */
+.arr{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:76px;border-radius:16px;border:none;background:rgba(255,255,255,.92);color:#b3564e;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(180,110,90,.25);z-index:5}
+#sPrev{left:-18px}
+#sNext{right:-18px}
+.arr:hover{background:#fff}
+.arr:active{background:#ffe9e0}
+.works{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.wcard{background:rgba(255,255,255,.78);border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(214,140,120,.16);cursor:pointer;transition:transform .3s,box-shadow .3s}
+.wcard:hover{transform:translateY(-6px);box-shadow:0 14px 32px rgba(214,140,120,.26)}
+.wimg{height:210px;background-size:cover;background-position:center;transition:transform .45s}
+.wcard:hover .wimg{transform:scale(1.05)}
+.wbody{padding:16px 18px 18px}
+.wbody h3{color:#b3564e;margin-bottom:8px;font-size:18px}
+.wbody p{font-size:14px;color:#8a5a52;line-height:1.5}
+.wlink{display:inline-block;margin-top:12px;color:#c96a55;font-weight:700;font-size:14px}
+.ovl{position:fixed;inset:0;display:none;z-index:50}
+.ovl.open{display:block}
+.ovl-bg{position:absolute;inset:0;background:rgba(40,15,15,.55);opacity:0;transition:opacity .35s}
+.ovl.show .ovl-bg{opacity:1}
+.viewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(420px,92vw);height:min(88vh,760px);border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s}
+.ovl.show .viewer{transform:translate(-50%,-50%) scale(1);opacity:1}
+/* Лента кадров сторис */
+.slides{position:absolute;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;touch-action:pan-x;user-select:none;-webkit-user-select:none}
+.slides::-webkit-scrollbar{display:none}
+.slides.grabbing{cursor:grabbing}
+.slide{position:relative;flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;background:#fff;overflow:hidden}
+.slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none;will-change:transform}
+.prog{position:absolute;top:10px;left:56px;right:10px;display:flex;gap:5px;z-index:3}
+.seg{flex:1;height:3px;background:rgba(255,255,255,.45);border-radius:3px;overflow:hidden}
+.seg b{display:block;height:100%;width:0;background:#fff;transition:width .2s}
+.seg.done b{width:100%}
+.cap{position:absolute;bottom:74px;left:16px;right:16px;z-index:3;color:#fff;font-weight:700;font-size:18px;text-shadow:0 1px 8px rgba(90,40,40,.55);pointer-events:none}
+.cta{position:absolute;bottom:16px;left:16px;right:16px;z-index:4;background:linear-gradient(135deg,#ff9a8a,#ffb199);color:#fff;text-align:center;padding:13px;border-radius:14px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(220,120,100,.35)}
+.xbtn{position:absolute;top:12px;right:12px;z-index:6;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.85);color:#7a4a44;font-size:16px;cursor:pointer}
+/* Лупа: мини-кнопка и круглое стекло */
+.lensBtn{position:absolute;top:12px;left:12px;z-index:6;width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:#b3564e;font-size:15px;cursor:pointer;box-shadow:0 3px 10px rgba(180,110,90,.3)}
+.lensBtn.on{background:#b3564e;color:#fff}
+.glass{position:fixed;top:0;left:0;width:130px;height:130px;border-radius:50%;pointer-events:none;z-index:99;display:none;background-repeat:no-repeat;background-color:#fff;box-shadow:0 6px 22px rgba(60,20,20,.4),inset 0 0 0 3px rgba(255,255,255,.9)}
+.wviewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(860px,94vw);max-height:90vh;border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s;display:flex;flex-direction:column}
+.ovl.show .wviewer{transform:translate(-50%,-50%) scale(1);opacity:1}
+.wbig{height:54vh;position:relative;overflow:hidden;background:#eee;flex:none}
+.wbig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-select:none;will-change:transform;pointer-events:none}
+.winfo{padding:20px 24px 24px;overflow:auto}
+.winfo h3{color:#b3564e;margin-bottom:10px;font-size:22px}
+.winfo p{color:#8a5a52;line-height:1.6}
+.cta-static{display:block;margin-top:18px;background:linear-gradient(135deg,#ff9a8a,#ffb199);color:#fff;text-align:center;padding:13px;border-radius:14px;font-weight:700;text-decoration:none}
+.contacts{text-align:center;padding:40px 0 60px}
+.contacts p{margin:10px 0 18px;color:#8a5a52}
+.cta.big{position:static;display:inline-block;padding:14px 34px}
+footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
+.sheet{max-width:1060px;margin:28px auto 48px;background:rgba(255,252,248,.93);border-radius:30px;box-shadow:0 18px 50px rgba(90,40,40,.22),0 6px 18px rgba(90,40,40,.14);overflow:hidden;position:relative}
+@media (max-width:760px){
+ .wrap{padding:0 16px}
+ .nav{border-radius:20px 20px 0 0}
+ .arr{display:none}
+ .lensBtn{display:none}
+ .prog{left:10px}
+ .story-tile{flex:0 0 calc((100% - 16px)/2)}
+ .works{grid-template-columns:1fr}
+ .hero{padding:18px 0 8px}
+ .hero h1{font-size:28px}
+ .tag{font-size:15px;margin-top:6px}
+ .sec{padding:22px 0}
+ .sheet{margin:12px 14px 28px;border-radius:20px}
+ .viewer{width:min(92vw,420px);height:min(86vh,760px);height:min(86dvh,760px);border-radius:24px}
+ .wviewer{max-height:88vh;max-height:88dvh}
+ .wbig{height:44vh}
+}
+@media (max-width:480px){
+ .story-tile{flex:0 0 100%}
+}
+</style>
 </head>
 <body>
-<div class="sheet">
+<div class="sheet" style="background:#fff8f2 url(images/centr.jpg) center/cover no-repeat">
 <nav class="nav"><div class="nav-in" style="max-width:960px;margin:0 auto">
 <div class="logo">☀ Sun Nails</div>
 <div class="links"><a href="#stories">Сторис</a><a href="#works">Работы</a><a href="#contacts">Контакты</a></div>
@@ -55,10 +152,9 @@
 <div class="ovl-bg" data-close="1"></div>
 <div class="viewer" id="storyView">
 <div class="prog" id="prog"></div>
+<button class="lensBtn" id="lensStory" title="Лупа (ПК)">🔍</button>
 <button class="xbtn" data-close="1">✕</button>
 <div class="slides" id="slides"></div>
-<div class="tapzone tzL" id="tzL"></div>
-<div class="tapzone tzR" id="tzR"></div>
 <div class="cap" id="cap"></div>
 <a class="cta" href="#contacts" id="storyCta">Записаться ›</a>
 </div>
@@ -67,15 +163,29 @@
 <div class="ovl" id="workOvl">
 <div class="ovl-bg" data-close="1"></div>
 <div class="wviewer">
+<button class="lensBtn" id="lensWork" title="Лупа (ПК)">🔍</button>
 <button class="xbtn" data-close="1">✕</button>
-<div class="wbig" id="wImg"></div>
+<div class="wbig" id="wBig"><img id="wImg" alt=""></div>
 <div class="winfo"><h3 id="wTitle"></h3><p id="wText"></p><a class="cta-static" href="#contacts" id="workCta">Записаться ›</a></div>
 </div>
 </div>
 
+<div class="glass" id="glass"></div>
+
 <script>
 (function(){
 "use strict";
+
+/* ============================================================
+   НАСТРОЙКА СКОРОСТИ АВТОПРОКРУТКИ ЛЕНЫ СТОРИС (только телефон)
+   AUTO_SPEED     — пикселей в СЕКУНДУ:
+                    20–40 — очень медленно, 60 — средне, 120 — быстро
+   AUTO_PAUSE_MS  — пауза (мс) после касания пальцем
+   ============================================================ */
+var AUTO_SPEED=30;
+var AUTO_PAUSE_MS=2500;
+var IS_MOBILE=window.matchMedia('(max-width:760px)');
+
 var STORIES=[
 {title:'Новинки сезона',slides:['images/story-1-slide-1.jpg','images/story-1-slide-2.jpg']},
 {title:'Нежный френч',slides:['images/story-2-slide-1.jpg','images/story-2-slide-2.jpg']},
@@ -89,10 +199,12 @@ var WORKS=[
 {title:'Весеннее цветение',text:'Веточка сакуры на молочном фоне — самый нежный маникюр этой весны.',img:'images/work-3-sakura.jpg'}
 ];
 
-/* --- Лента сторис --- */
+function setLock(on){document.body.classList.toggle('lock',on);}
+
+/* --- Лента сторис на главной --- */
 var track=document.getElementById('strack');
 var tiles=Array.prototype.slice.call(track.querySelectorAll('.story-tile'));
-var step=216, anim=null, snapT=null, moved=false, dragging=false;
+var step=216,anim=null,snapT=null,moved=false,dragging=false;
 function calcStep(){
  var r=tiles[0].getBoundingClientRect();
  var gap=parseFloat(getComputedStyle(track).gap)||16;
@@ -101,25 +213,42 @@ function calcStep(){
 function maxScroll(){return track.scrollWidth-track.clientWidth;}
 function animateTo(target){
  if(anim)cancelAnimationFrame(anim);
- var start=track.scrollLeft, d=target-start;
+ var start=track.scrollLeft,d=target-start;
  if(Math.abs(d)<2){track.scrollLeft=target;anim=null;return;}
- var t0=performance.now(), dur=Math.min(700,250+Math.abs(d));
+ var t0=performance.now(),dur=Math.min(700,250+Math.abs(d));
  function fr(t){
-  var p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);
+  var p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
   track.scrollLeft=start+d*e;
-  if(p<1)anim=requestAnimationFrame(fr); else anim=null;
+  if(p<1)anim=requestAnimationFrame(fr);else anim=null;
  }
  anim=requestAnimationFrame(fr);
 }
 function go(dir){
  calcStep();
  var snapped=Math.round(track.scrollLeft/step)*step;
- var target=snapped+dir*step;
- target=Math.max(0,Math.min(maxScroll(),target));
+ var target=Math.max(0,Math.min(maxScroll(),snapped+dir*step));
  animateTo(target);
 }
 document.getElementById('sPrev').addEventListener('click',function(){go(-1);});
 document.getElementById('sNext').addEventListener('click',function(){go(1);});
+
+/* --- Автопрокрутка ленты (только телефон) --- */
+var overlayOpen=false,pausedUntil=0,autoT=null,lastAutoT=0;
+function autoLoop(t){
+ if(!IS_MOBILE.matches){autoT=null;lastAutoT=0;return;}
+ if(!lastAutoT)lastAutoT=t;
+ var dt=t-lastAutoT;lastAutoT=t;
+ if(!dragging&&!anim&&!overlayOpen&&performance.now()>=pausedUntil){
+  var max=maxScroll();
+  if(max<=1){track.scrollLeft=0;}
+  else if(track.scrollLeft>=max-1){track.scrollLeft=0;}
+  else track.scrollLeft=Math.min(max,track.scrollLeft+AUTO_SPEED*dt/1000);
+ }
+ autoT=requestAnimationFrame(autoLoop);
+}
+if(IS_MOBILE.matches)autoT=requestAnimationFrame(autoLoop);
+try{IS_MOBILE.addEventListener('change',function(e){if(e.matches&&!autoT)autoT=requestAnimationFrame(autoLoop);});}catch(err){}
+function touchPause(){pausedUntil=performance.now()+AUTO_PAUSE_MS;}
 
 var downX=0,downS=0,vel=0,lastX=0,lastT=0;
 track.addEventListener('pointerdown',function(e){
@@ -127,6 +256,7 @@ track.addEventListener('pointerdown',function(e){
  lastX=e.clientX;lastT=performance.now();
  if(anim){cancelAnimationFrame(anim);anim=null;}
  track.classList.add('dragging');
+ touchPause();
 });
 window.addEventListener('pointermove',function(e){
  if(!dragging)return;
@@ -142,18 +272,16 @@ window.addEventListener('pointermove',function(e){
 window.addEventListener('pointerup',function(e){
  if(!dragging)return;
  dragging=false;track.classList.remove('dragging');
+ touchPause();
  if(moved){
   calcStep();
   var raw=downS-(e.clientX-downX)-vel*160;
-  var target=Math.round(raw/step)*step;
-  target=Math.max(0,Math.min(maxScroll(),target));
+  var target=Math.max(0,Math.min(maxScroll(),Math.round(raw/step)*step));
   animateTo(target);
  }
 });
-track.addEventListener('pointercancel',function(){dragging=false;track.classList.remove('dragging');});
-track.addEventListener('click',function(e){
- if(moved){e.stopPropagation();e.preventDefault();moved=false;}
-},true);
+track.addEventListener('pointercancel',function(){dragging=false;track.classList.remove('dragging');touchPause();});
+track.addEventListener('click',function(e){if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
 track.addEventListener('wheel',function(e){
  var max=maxScroll();
  if(max<=1)return;
@@ -181,19 +309,21 @@ track.addEventListener('scroll',function(){
 var so=document.getElementById('storyOvl'),sv=document.getElementById('storyView');
 var sl=document.getElementById('slides'),pg=document.getElementById('prog');
 var cap=document.getElementById('cap');
-var curStory=0,sIdx=0,sTimer=null;
+var curStory=0,sIdx=0;
+
 function openStory(i,fromEl){
+ overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ setLock(true);
+ sResetZoom();
  curStory=i;sIdx=0;
  sl.innerHTML='';pg.innerHTML='';
- STORIES[i].slides.forEach(function(u,k){
-  var d=document.createElement('div');
-  d.className='slide'+(k===0?' on':'');
-  d.style.backgroundImage='url('+u+')';
-  sl.appendChild(d);
-  var s=document.createElement('div');
-  s.className='seg';s.innerHTML='<b></b>';
-  pg.appendChild(s);
+ STORIES[i].slides.forEach(function(u){
+  var d=document.createElement('div');d.className='slide';
+  var img=document.createElement('img');img.loading='lazy';img.src=u;img.alt='';
+  d.appendChild(img);sl.appendChild(d);
+  var s=document.createElement('div');s.className='seg';s.innerHTML='<b></b>';pg.appendChild(s);
  });
+ sl.scrollLeft=0;
  cap.textContent=STORIES[i].title;
  if(fromEl){
   var r=fromEl.getBoundingClientRect();
@@ -202,28 +332,266 @@ function openStory(i,fromEl){
   sv.style.transformOrigin=ox+'% '+oy+'%';
  }
  so.classList.add('open');
- requestAnimationFrame(function(){requestAnimationFrame(function(){
-  so.classList.add('show');
-  startSlide(0);
- });});
+ requestAnimationFrame(function(){requestAnimationFrame(function(){so.classList.add('show');});});
 }
-function startSlide(k){
- sIdx=k;
- var segs=pg.children,sls=sl.children,j;
- for(j=0;j<segs.length;j++)segs[j].className='seg'+(j<k?' done':'');
- segs[k].className='seg run';
- for(j=0;j<sls.length;j++)sls[j].className='slide'+(j===k?' on':'');
- if(sTimer)clearTimeout(sTimer);
- sTimer=setTimeout(function(){
-  if(sIdx+1<STORIES[curStory].slides.length)startSlide(sIdx+1);else closeOv(so);
- },5000);
+
+/* Полоски прогресса следуют за лентой кадров */
+sl.addEventListener('scroll',function(){
+ if(!so.classList.contains('open'))return;
+ var w=sl.clientWidth||1;
+ var n=STORIES[curStory].slides.length;
+ var idx=Math.max(0,Math.min(n-1,Math.round(sl.scrollLeft/w)));
+ if(idx!==sIdx){sIdx=idx;sResetZoom();}
+ var segs=pg.children;
+ for(var j=0;j<segs.length;j++)segs[j].className='seg'+(j<=idx?' done':'');
+},{passive:true});
+
+/* --- Зум кадра в сторис (телефон): щипок, перетаскивание, двойной тап --- */
+var sZ=1,sX=0,sY=0,sImg=null;
+function sResetZoom(){
+ if(sImg){sImg.style.transition='transform .25s ease-out';sImg.style.transform='';sImg=null;}
+ sZ=1;sX=0;sY=0;
+ sl.style.touchAction='';
 }
-document.getElementById('tzR').addEventListener('click',function(){
- if(sIdx+1<STORIES[curStory].slides.length)startSlide(sIdx+1);else closeOv(so);
+function sApply(){
+ if(sImg){sImg.style.transition='none';sImg.style.transform='translate('+sX+'px,'+sY+'px) scale('+sZ+')';}
+}
+function sClamp(){
+ if(!sImg)return;
+ var r=sl.getBoundingClientRect();
+ var ox=Math.max(0,(r.width*sZ-r.width)/2),oy=Math.max(0,(r.height*sZ-r.height)/2);
+ sX=Math.max(-ox,Math.min(ox,sX));sY=Math.max(-oy,Math.min(oy,sY));
+}
+function sImgAt(idx){
+ var s=sl.children[idx];
+ return s?s.querySelector('img'):null;
+}
+function sZoomAt(x,y){
+ var r=sl.getBoundingClientRect();
+ var cx=x-r.left-r.width/2,cy=y-r.top-r.height/2;
+ sX=-cx*(sZ-1);sY=-cy*(sZ-1);sClamp();
+}
+var pOn=false,pnOn=false,tx0=0,ty0=0,td0=0,ts0=1,zx0=0,zy0=0,px0=0,py0=0,ltapT=0,ltapX=0,ltapY=0;
+sl.addEventListener('touchstart',function(e){
+ if(!so.classList.contains('show'))return;
+ if(e.touches.length===2){
+  e.preventDefault();
+  pOn=true;pnOn=false;
+  var a=e.touches[0],b=e.touches[1];
+  tx0=(a.clientX+b.clientX)/2;ty0=(a.clientY+b.clientY)/2;
+  td0=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+  ts0=sZ;zx0=sX;zy0=sY;
+  var r=sl.getBoundingClientRect();
+  px0=((tx0-r.left-r.width/2)-sX)/ts0;
+  py0=((ty0-r.top-r.height/2)-sY)/ts0;
+  if(!sImg)sImg=sImgAt(sIdx);
+  sl.style.touchAction='none';
+  return;
+ }
+ if(e.touches.length===1&&sZ>1){
+  pnOn=true;
+  tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;zx0=sX;zy0=sY;
+ }
+},{passive:false});
+sl.addEventListener('touchmove',function(e){
+ if(pOn&&e.touches.length===2){
+  e.preventDefault();
+  var a=e.touches[0],b=e.touches[1];
+  var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+  sZ=Math.max(1,Math.min(4,ts0*d/td0));
+  if(sZ<=1.01){sResetZoom();}
+  else{
+   var r=sl.getBoundingClientRect();
+   sX=((a.clientX+b.clientX)/2-r.left-r.width/2)-sZ*px0;
+   sY=((a.clientY+b.clientY)/2-r.top-r.height/2)-sZ*py0;
+   sClamp();sApply();
+  }
+  return;
+ }
+ if(pnOn&&e.touches.length===1&&sZ>1){
+  e.preventDefault();
+  sX=zx0+(e.touches[0].clientX-tx0);
+  sY=zy0+(e.touches[0].clientY-ty0);
+  sClamp();sApply();
+ }
+},{passive:false});
+sl.addEventListener('touchend',function(e){
+ if(pOn){
+  if(e.touches.length<2){pOn=false;if(sZ<=1.01)sl.style.touchAction='';}
+  return;
+ }
+ if(pnOn&&e.touches.length===0){pnOn=false;if(sZ<=1.01)sl.style.touchAction='';return;}
+ if(sZ<=1.01&&e.touches.length===0&&e.changedTouches.length===1){
+  var t=performance.now();
+  var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
+  if(t-ltapT<320&&Math.hypot(x-ltapX,y-ltapY)<26){
+   sImg=sImgAt(sIdx);
+   if(sImg){sZ=2.5;sZoomAt(x,y);sApply();sl.style.touchAction='none';}
+   ltapT=0;e.preventDefault();
+  }else{ltapT=t;ltapX=x;ltapY=y;}
+ }
+},{passive:false});
+
+/* Лента кадров на ПК: тянуть мышью. Снап на время drag отключается */
+var mdOn=false,mdX=0,mdS=0,mdAnim=null;
+sl.addEventListener('pointerdown',function(e){
+ if(e.pointerType==='mouse'&&sZ<=1.01&&!lensMode){
+  mdOn=true;mdX=e.clientX;mdS=sl.scrollLeft;
+  sl.style.scrollSnapType='none';
+  sl.classList.add('grabbing');
+ }
 });
-document.getElementById('tzL').addEventListener('click',function(){
- if(sIdx>0)startSlide(sIdx-1);else startSlide(sIdx);
+window.addEventListener('pointermove',function(e){
+ if(mdOn)sl.scrollLeft=mdS-(e.clientX-mdX);
 });
+window.addEventListener('pointerup',function(){
+ if(!mdOn)return;
+ mdOn=false;sl.classList.remove('grabbing');
+ var w=sl.clientWidth||1;
+ var target=Math.round(sl.scrollLeft/w)*w;
+ if(mdAnim)cancelAnimationFrame(mdAnim);
+ var st=sl.scrollLeft,d=target-st;
+ if(Math.abs(d)<2){sl.scrollLeft=target;sl.style.scrollSnapType='';return;}
+ var t0=performance.now(),dur=Math.min(600,250+Math.abs(d));
+ (function fr(t){
+  var p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);
+  sl.scrollLeft=st+d*e;
+  if(p<1)mdAnim=requestAnimationFrame(fr);else{mdAnim=null;sl.style.scrollSnapType='';}
+ })(t0);
+});
+sl.addEventListener('wheel',function(e){
+ if(Math.abs(e.deltaX)>Math.abs(e.deltaY))return;
+ e.preventDefault();
+ sl.scrollLeft+=e.deltaY;
+},{passive:false});
+
+/* --- Лупа на ПК: для сторис и работ --- */
+var glass=document.getElementById('glass');
+var lensMode=null,lensEl=null,lensImg=null,lensBg=null;
+function lensStop(){
+ if(lensEl){lensEl.classList.remove('on');lensEl=null;}
+ lensMode=null;lensImg=null;lensBg=null;
+ glass.style.display='none';
+}
+function lensStart(btn,mode){
+ lensStop();
+ lensEl=btn;lensEl.classList.add('on');
+ lensMode=mode;
+ if(mode==='story')lensImg=sImgAt(sIdx);
+ else lensImg=document.getElementById('wImg');
+ if(lensImg)lensBg='url('+lensImg.src+')';
+}
+document.getElementById('lensStory').addEventListener('click',function(){
+ lensMode==='story'?lensStop():lensStart(this,'story');
+});
+document.getElementById('lensWork').addEventListener('click',function(){
+ lensMode==='work'?lensStop():lensStart(this,'work');
+});
+document.addEventListener('mousemove',function(e){
+ if(!lensMode||!lensImg||!lensBg)return;
+ var host=lensMode==='story'?sl:document.getElementById('wBig');
+ var r=host.getBoundingClientRect();
+ var k=2.2;
+ var bw=lensImg.naturalWidth||r.width;
+ if(lensMode==='story')bw=r.width*k;else bw=r.width*k;
+ glass.style.display='block';
+ glass.style.left=(e.clientX-65)+'px';
+ glass.style.top=(e.clientY-65)+'px';
+ glass.style.backgroundImage=lensBg;
+ if(lensMode==='story'){
+  glass.style.backgroundSize=(bw*k)+'px '+(r.height*k)+'px';
+  glass.style.backgroundPosition='-'+((e.clientX-r.left)*k-65)+'px -'+((e.clientY-r.top)*k-65)+'px';
+ }else{
+  var iw=lensImg.naturalWidth||1,ih=lensImg.naturalHeight||1;
+  var boxW=r.width*k,boxH=r.height*k;
+  var sx,sy,sw,sh;
+  var scale=Math.max(r.width/iw,r.height/ih);
+  var dw=iw*scale,dh=ih*scale;
+  var offx=(dw-r.width)/2,offy=(dh-r.height)/2;
+  glass.style.backgroundSize=(dw*k)+'px '+(dh*k)+'px';
+  glass.style.backgroundPosition='-'+((offx+(e.clientX-r.left))*k-65)+'px -'+((offy+(e.clientY-r.top))*k-65)+'px';
+ }
+});
+
+/* --- Зум фото работ (телефон): щипок, перетаскивание, двойной тап --- */
+var wBig=document.getElementById('wBig'),wImg=document.getElementById('wImg');
+var wZ=1,wX=0,wY=0,wpOn=false,wpnOn=false,wtx0=0,wty0=0,wtd0=0,wts0=1,wzx0=0,wzy0=0,wpx0=0,wpy0=0,wltT=0,wltX=0,wltY=0;
+function wReset(){
+ wImg.style.transition='transform .25s ease-out';wImg.style.transform='';
+ wZ=1;wX=0;wY=0;
+ wImg.style.touchAction='';
+}
+wBig.addEventListener('touchstart',function(e){
+ if(e.touches.length===2){
+  e.preventDefault();
+  wpOn=true;wpnOn=false;
+  var a=e.touches[0],b=e.touches[1];
+  wtx0=(a.clientX+b.clientX)/2;wty0=(a.clientY+b.clientY)/2;
+  wtd0=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+  wts0=wZ;wzx0=wX;wzy0=wY;
+  var r=wBig.getBoundingClientRect();
+  wpx0=((wtx0-r.left-r.width/2)-wX)/wts0;
+  wpy0=((wty0-r.top-r.height/2)-wY)/wts0;
+  wImg.style.touchAction='none';
+  return;
+ }
+ if(e.touches.length===1&&wZ>1){
+  wpnOn=true;
+  wtx0=e.touches[0].clientX;wty0=e.touches[0].clientY;wzx0=wX;wzy0=wY;
+ }
+},{passive:false});
+wBig.addEventListener('touchmove',function(e){
+ if(wpOn&&e.touches.length===2){
+  e.preventDefault();
+  var a=e.touches[0],b=e.touches[1];
+  var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+  wZ=Math.max(1,Math.min(4,wts0*d/wtd0));
+  if(wZ<=1.01){wReset();}
+  else{
+   var r=wBig.getBoundingClientRect();
+   wX=((a.clientX+b.clientX)/2-r.left-r.width/2)-wZ*wpx0;
+   wY=((a.clientY+b.clientY)/2-r.top-r.height/2)-wZ*wpy0;
+   wX=Math.max(-(r.width*(wZ-1)/2),Math.min(r.width*(wZ-1)/2,wX));
+   wY=Math.max(-(r.height*(wZ-1)/2),Math.min(r.height*(wZ-1)/2,wY));
+   wImg.style.transition='none';
+   wImg.style.transform='translate('+wX+'px,'+wY+'px) scale('+wZ+')';
+  }
+  return;
+ }
+ if(wpnOn&&e.touches.length===1&&wZ>1){
+  e.preventDefault();
+  wX=wzx0+(e.touches[0].clientX-wtx0);
+  wY=wzy0+(e.touches[0].clientY-wty0);
+  wX=Math.max(-(wBig.clientWidth*(wZ-1)/2),Math.min(wBig.clientWidth*(wZ-1)/2,wX));
+  wY=Math.max(-(wBig.clientHeight*(wZ-1)/2),Math.min(wBig.clientHeight*(wZ-1)/2,wY));
+  wImg.style.transition='none';
+  wImg.style.transform='translate('+wX+'px,'+wY+'px) scale('+wZ+')';
+ }
+},{passive:false});
+wBig.addEventListener('touchend',function(e){
+ if(wpOn){
+  if(e.touches.length<2){wpOn=false;if(wZ<=1.01)wImg.style.touchAction='';}
+  return;
+ }
+ if(wpnOn&&e.touches.length===0){wpnOn=false;if(wZ<=1.01)wImg.style.touchAction='';return;}
+ if(wZ<=1.01&&e.touches.length===0&&e.changedTouches.length===1){
+  var t=performance.now();
+  var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
+  if(t-wltT<320&&Math.hypot(x-wltX,y-wltY)<26){
+   wZ=2.5;
+   var r=wBig.getBoundingClientRect();
+   wX=-((x-r.left-r.width/2))*(wZ-1);
+   wY=-((y-r.top-r.height/2))*(wZ-1);
+   wX=Math.max(-(r.width*(wZ-1)/2),Math.min(r.width*(wZ-1)/2,wX));
+   wY=Math.max(-(r.height*(wZ-1)/2),Math.min(r.height*(wZ-1)/2,wY));
+   wImg.style.transition='none';
+   wImg.style.transform='translate('+wX+'px,'+wY+'px) scale('+wZ+')';
+   wImg.style.touchAction='none';
+   wltT=0;e.preventDefault();
+  }else{wltT=t;wltX=x;wltY=y;}
+ }
+},{passive:false});
+
 tiles.forEach(function(t,i){t.addEventListener('click',function(){openStory(i,t);});});
 document.getElementById('storyCta').addEventListener('click',function(e){
  e.preventDefault();closeOv(so);
@@ -233,7 +601,10 @@ document.getElementById('storyCta').addEventListener('click',function(e){
 /* --- Просмотр работ --- */
 var wo=document.getElementById('workOvl');
 function openWork(i,fromEl){
- document.getElementById('wImg').style.backgroundImage='url('+WORKS[i].img+')';
+ overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ setLock(true);
+ wReset();
+ document.getElementById('wImg').src=WORKS[i].img;
  document.getElementById('wTitle').textContent=WORKS[i].title;
  document.getElementById('wText').textContent=WORKS[i].text;
  if(fromEl){
@@ -253,24 +624,57 @@ document.getElementById('workCta').addEventListener('click',function(e){
  setTimeout(function(){document.getElementById('contacts').scrollIntoView({behavior:'smooth'});},340);
 });
 
-/* --- Закрытие --- */
+/* --- Закрытие: блокировка снимается сразу --- */
 function closeOv(o){
  o.classList.remove('show');
- if(sTimer){clearTimeout(sTimer);sTimer=null;}
+ overlayOpen=false;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ setLock(false);
+ sResetZoom();wReset();lensStop();
  setTimeout(function(){o.classList.remove('open');},320);
 }
 document.querySelectorAll('[data-close]').forEach(function(el){
  el.addEventListener('click',function(){closeOv(el.closest('.ovl'));});
 });
-window.addEventListener('keydown',function(e){
- if(e.key==='Escape'){
-  if(so.classList.contains('open'))closeOv(so);
-  if(wo.classList.contains('open'))closeOv(wo);
+
+/* Жесты поверх оверлея не прокручивают страницу.
+   Исключения: лента кадров сторис, фото работ, текст работ. */
+[so,wo].forEach(function(o){
+ o.addEventListener('touchmove',function(e){
+  if(e.target.closest&&e.target.closest('.slides'))return;
+  if(e.target.closest&&e.target.closest('.wbig'))return;
+  if(e.target.closest&&e.target.closest('.winfo'))return;
+  e.preventDefault();
+ },{passive:false});
+});
+
+/* Сайт не увеличивается случайным щипком (кроме зума в сторис) */
+document.addEventListener('gesturestart',function(e){e.preventDefault();},{passive:false});
+document.addEventListener('touchmove',function(e){
+ if(e.touches.length>1){
+  if(e.target.closest&&(e.target.closest('#storyView')||e.target.closest('#wBig')))return;
+  e.preventDefault();
  }
+},{passive:false});
+
+/* Клавиатура: стрелки листают кадры по одному, Esc закрывает */
+window.addEventListener('keydown',function(e){
+ if(so.classList.contains('open')){
+  if(e.key==='Escape'){closeOv(so);return;}
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+   e.preventDefault();
+   var w=sl.clientWidth||1;
+   var cur=Math.round(sl.scrollLeft/w);
+   var n=STORIES[curStory].slides.length;
+   var target=Math.max(0,Math.min(n-1,cur+(e.key==='ArrowRight'?1:-1)))*w;
+   sl.scrollTo({left:target,behavior:'smooth'});
+  }
+ }
+ if(e.key==='Escape'&&wo.classList.contains('open'))closeOv(wo);
 });
 })();
 </script>
 </body>
 </html>
+
 
 
