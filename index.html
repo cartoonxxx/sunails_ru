@@ -51,31 +51,34 @@ body.lock{overflow:hidden}
 .ovl.show .ovl-bg{opacity:1}
 .viewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(420px,92vw);height:min(88vh,760px);border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s}
 .ovl.show .viewer{transform:translate(-50%,-50%) scale(1);opacity:1}
-/* Кадры сторис: двигаются через transform, без нативной прокрутки */
+/* Кадры сторис: transform-слайдер, свайп мышью и пальцем */
 .slides{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 .slides.grabbing{cursor:grabbing}
 .sf{display:flex;height:100%;will-change:transform}
 .slide{position:relative;flex:0 0 100%;height:100%;overflow:hidden;background:#fff}
 .slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none;will-change:transform}
-.prog{position:absolute;top:10px;left:56px;right:10px;display:flex;gap:5px;z-index:3}
+.prog{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:5px;z-index:3}
 .seg{flex:1;height:3px;background:rgba(255,255,255,.45);border-radius:3px;overflow:hidden}
 .seg b{display:block;height:100%;width:0;background:#fff;transition:width .2s}
 .seg.done b{width:100%}
 .cap{position:absolute;bottom:74px;left:16px;right:16px;z-index:3;color:#fff;font-weight:700;font-size:18px;text-shadow:0 1px 8px rgba(90,40,40,.55);pointer-events:none}
 .cta{position:absolute;bottom:16px;left:16px;right:16px;z-index:4;background:linear-gradient(135deg,#ff9a8a,#ffb199);color:#fff;text-align:center;padding:13px;border-radius:14px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(220,120,100,.35)}
 .xbtn{position:absolute;top:12px;right:12px;z-index:6;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.85);color:#7a4a44;font-size:16px;cursor:pointer}
-/* Кнопка «на весь экран» */
-.expBtn{position:absolute;top:12px;left:12px;z-index:6;width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:#b3564e;cursor:pointer;box-shadow:0 3px 10px rgba(180,110,90,.3);display:flex;align-items:center;justify-content:center;padding:0}
-.expBtn svg{width:16px;height:16px}
-/* Полноэкранный просмотр фото */
+/* Значок «на весь экран» — правый нижний угол окна сторис */
+.expBtn{position:absolute;bottom:84px;right:16px;z-index:5;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:#b3564e;cursor:pointer;box-shadow:0 3px 10px rgba(180,110,90,.35);display:flex;align-items:center;justify-content:center;padding:0}
+.expBtn svg{width:20px;height:20px}
+.expBtn:hover{background:#fff}
+/* Полноэкранный просмотр */
 .fs{position:fixed;inset:0;z-index:100;display:none;background:rgba(22,9,9,.94)}
 .fs.open{display:flex;align-items:center;justify-content:center}
-.fs img{max-width:96vw;max-height:96vh;object-fit:contain;transform-origin:center center;will-change:transform;touch-action:none}
+.fs img{max-width:96vw;max-height:96vh;object-fit:contain;will-change:transform;touch-action:none}
 .fs .xbtn{position:absolute;top:12px;right:12px;z-index:2}
 .wviewer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);width:min(860px,94vw);max-height:90vh;border-radius:26px;overflow:hidden;background:#fff;opacity:0;transition:transform .38s cubic-bezier(.22,1,.36,1),opacity .3s;display:flex;flex-direction:column}
 .ovl.show .wviewer{transform:translate(-50%,-50%) scale(1);opacity:1}
-.wbig{height:54vh;position:relative;overflow:hidden;background:#eee;flex:none;cursor:pointer}
+.wbig{height:54vh;position:relative;overflow:hidden;background:#eee;flex:none}
 .wbig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-select:none;will-change:transform;pointer-events:none}
+/* Значок в фото работ — правый нижний угол фото */
+.wbig .expBtn{bottom:12px;right:12px}
 .winfo{padding:20px 24px 24px;overflow:auto}
 .winfo h3{color:#b3564e;margin-bottom:10px;font-size:22px}
 .winfo p{color:#8a5a52;line-height:1.6}
@@ -86,23 +89,19 @@ body.lock{overflow:hidden}
 footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
 .sheet{max-width:1060px;margin:28px auto 48px;background:rgba(255,252,248,.93);border-radius:30px;box-shadow:0 18px 50px rgba(90,40,40,.22),0 6px 18px rgba(90,40,40,.14);overflow:hidden;position:relative}
 @media (max-width:760px){
- .wrap{padding:0 16px}
+ .wrap{padding:0 20px}
  .nav{border-radius:20px 20px 0 0}
  .arr{display:none}
- .prog{left:10px}
- .story-tile{flex:0 0 calc((100% - 16px)/2)}
+ .story-tile{flex:0 0 100%}
  .works{grid-template-columns:1fr}
  .hero{padding:18px 0 8px}
  .hero h1{font-size:28px}
  .tag{font-size:15px;margin-top:6px}
  .sec{padding:22px 0}
- .sheet{margin:12px 14px 28px;border-radius:20px}
+ .sheet{margin:12px 16px 28px;border-radius:20px}
  .viewer{width:min(92vw,420px);height:min(86vh,760px);height:min(86dvh,760px);border-radius:24px}
  .wviewer{max-height:88vh;max-height:88dvh}
  .wbig{height:44vh}
-}
-@media (max-width:480px){
- .story-tile{flex:0 0 100%}
 }
 </style>
 </head>
@@ -155,9 +154,9 @@ footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
 <div class="ovl-bg" data-close="1"></div>
 <div class="viewer" id="storyView">
 <div class="prog" id="prog"></div>
-<button class="expBtn" id="expStory" title="На весь экран"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
 <button class="xbtn" data-close="1">✕</button>
 <div class="slides" id="slides"><div class="sf" id="sf"></div></div>
+<button class="expBtn" id="expStory" title="На весь экран"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
 <div class="cap" id="cap"></div>
 <a class="cta" href="#contacts" id="storyCta">Записаться ›</a>
 </div>
@@ -168,8 +167,8 @@ footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
 <div class="wviewer">
 <button class="xbtn" data-close="1">✕</button>
 <div class="wbig" id="wBig">
-<button class="expBtn" id="expWork" title="На весь экран"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
 <img id="wImg" alt="">
+<button class="expBtn" id="expWork" title="На весь экран"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
 </div>
 <div class="winfo"><h3 id="wTitle"></h3><p id="wText"></p><a class="cta-static" href="#contacts" id="workCta">Записаться ›</a></div>
 </div>
@@ -186,9 +185,9 @@ footer{padding:20px;text-align:center;font-size:13px;color:#b39088}
 
 /* ============================================================
    НАСТРОЙКА СКОРОСТИ АВТОПРОКРУТКИ ЛЕНЫ СТОРИС (только телефон)
-   AUTO_SPEED     — пикселей в СЕКУНДУ:
-                    20–40 — очень медленно, 60 — средне, 120 — быстро
-   AUTO_PAUSE_MS  — пауза (мс) после касания пальцем
+   AUTO_SPEED — пикселей в СЕКУНДУ:
+     20–40 — очень медленно, 60 — средне, 120 — быстро
+   AUTO_PAUSE_MS — пауза (мс) после касания пальцем
    ============================================================ */
 var AUTO_SPEED=30;
 var AUTO_PAUSE_MS=2500;
@@ -209,7 +208,7 @@ var WORKS=[
 
 function setLock(on){document.body.classList.toggle('lock',on);}
 
-/* --- Универсальный зум (щипок, перетаскивание, двойной тап) --- */
+/* --- Зум: щипок, перетаскивание, двойной тап --- */
 function makeZoom(box,getImg){
  var st={z:1,x:0,y:0,img:null};
  function reset(){
@@ -238,6 +237,56 @@ function makeZoom(box,getImg){
  }
  function bind(){st.img=getImg()||st.img;}
  return{st:st,reset:reset,apply:apply,clamp:clamp,panBy:panBy,zoomTo:zoomTo,bind:bind};
+}
+function bindPinch(box,zm,onDone){
+ var pd=0,pz=1,px0=0,py0=0,ltT=0,ltX=0,ltY=0,panX=0,panY=0;
+ box.addEventListener('touchstart',function(e){
+  if(e.touches.length===2){
+   e.preventDefault();
+   var a=e.touches[0],b=e.touches[1];
+   pd=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+   pz=zm.st.z;zm.bind();
+   var r=box.getBoundingClientRect();
+   var cx=(a.clientX+b.clientX)/2,cy=(a.clientY+b.clientY)/2;
+   px0=(cx-r.left-r.width/2-zm.st.x)/pz;
+   py0=(cy-r.top-r.height/2-zm.st.y)/pz;
+   return;
+  }
+  if(e.touches.length===1&&zm.st.z>1){panX=e.touches[0].clientX;panY=e.touches[0].clientY;}
+ },{passive:false});
+ box.addEventListener('touchmove',function(e){
+  if(e.touches.length===2&&pd){
+   e.preventDefault();
+   var a=e.touches[0],b=e.touches[1];
+   var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
+   zm.st.z=Math.max(1,Math.min(4,pz*d/pd));
+   if(zm.st.z<=1.01){zm.reset();}
+   else{
+    var r=box.getBoundingClientRect();
+    zm.st.x=((a.clientX+b.clientX)/2-r.left-r.width/2)-zm.st.z*px0;
+    zm.st.y=((a.clientY+b.clientY)/2-r.top-r.height/2)-zm.st.z*py0;
+    zm.clamp();zm.apply();
+   }
+   return;
+  }
+  if(e.touches.length===1&&zm.st.z>1&&pd===0){
+   e.preventDefault();
+   zm.panBy(e.touches[0].clientX-panX,e.touches[0].clientY-panY);
+   panX=e.touches[0].clientX;panY=e.touches[0].clientY;
+  }
+ },{passive:false});
+ box.addEventListener('touchend',function(e){
+  if(e.touches.length===2)return;
+  if(e.touches.length===1){pd=0;panX=e.touches[0].clientX;panY=e.touches[0].clientY;return;}
+  pd=0;
+  if(e.changedTouches.length===1&&zm.st.z<=1.01){
+   var t=performance.now();
+   var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
+   if(t-ltT<320&&Math.hypot(x-ltX,y-ltY)<26){
+    zm.bind();zm.zoomTo(2.5,x,y);ltT=0;e.preventDefault();
+   }else{ltT=t;ltX=x;ltY=y;}
+  }
+ },{passive:false});
 }
 
 /* --- Лента сторис на главной --- */
@@ -349,12 +398,13 @@ track.addEventListener('scroll',function(){
  },170);
 });
 
-/* --- Просмотр сторис: кадры на transform-слайдере --- */
+/* --- Просмотр сторис: клик по плитке открывает окно --- */
 var so=document.getElementById('storyOvl'),sv=document.getElementById('storyView');
 var sl=document.getElementById('slides'),sf=document.getElementById('sf'),pg=document.getElementById('prog');
 var cap=document.getElementById('cap');
 var curStory=0,fIdx=0,fW=0,fP=null,fPinch=false,wAcc=0;
 var sZm=makeZoom(sl,function(){var s=sf.children[fIdx];return s?s.querySelector('img'):null;});
+bindPinch(sl,sZm);
 
 function fWcalc(){fW=sl.clientWidth||1;}
 function updSegs(){
@@ -369,6 +419,7 @@ function loadNeighbors(i){
   if(img&&!img.getAttribute('src'))img.src=img.getAttribute('data-src');
  });
 }
+function sImgEl(){var s=sf.children[fIdx];return s?s.querySelector('img'):null;}
 function fGo(i){
  fIdx=Math.max(0,Math.min(STORIES[curStory].slides.length-1,i));
  sf.style.transition='';
@@ -404,8 +455,11 @@ function openStory(i,fromEl){
   so.classList.add('show');
  });});
 }
+tiles.forEach(function(t,i){
+ t.addEventListener('click',function(){openStory(i,t);});
+});
 
-/* Перетаскивание и панорамирование: мышь и палец через pointer-события */
+/* Свайп по кадрам: мышь и палец через pointer-события */
 sl.addEventListener('pointerdown',function(e){
  if(!so.classList.contains('show')||fPinch)return;
  if(e.pointerType==='mouse'&&e.button!==0)return;
@@ -447,57 +501,6 @@ function fEnd(e,cancelled){
 sl.addEventListener('pointerup',function(e){fEnd(e,false);});
 sl.addEventListener('pointercancel',function(e){fEnd(e,true);});
 sl.addEventListener('dragstart',function(e){e.preventDefault();});
-
-/* Щипок и двойной тап по кадру (два пальца) */
-var fPD=0,fPZ=1,fpx0=0,fpy0=0,fLT=0,fLX=0,fLY=0;
-sl.addEventListener('touchstart',function(e){
- if(!so.classList.contains('show'))return;
- if(e.touches.length===2){
-  fPinch=true;
-  if(fP){fP=null;fGo(fIdx);}
-  e.preventDefault();
-  var a=e.touches[0],b=e.touches[1];
-  fPD=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-  fPZ=sZm.st.z;
-  sZm.bind();
-  var r=sl.getBoundingClientRect();
-  var cx=(a.clientX+b.clientX)/2,cy=(a.clientY+b.clientY)/2;
-  fpx0=(cx-r.left-r.width/2-sZm.st.x)/fPZ;
-  fpy0=(cy-r.top-r.height/2-sZm.st.y)/fPZ;
- }
-},{passive:false});
-sl.addEventListener('touchmove',function(e){
- if(fPinch&&e.touches.length===2){
-  e.preventDefault();
-  var a=e.touches[0],b=e.touches[1];
-  var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-  sZm.st.z=Math.max(1,Math.min(4,fPZ*d/fPD));
-  if(sZm.st.z<=1.01){sZm.reset();}
-  else{
-   var r=sl.getBoundingClientRect();
-   sZm.st.x=((a.clientX+b.clientX)/2-r.left-r.width/2)-sZm.st.z*fpx0;
-   sZm.st.y=((a.clientY+b.clientY)/2-r.top-r.height/2)-sZm.st.z*fpy0;
-   sZm.clamp();sZm.apply();
-  }
- }
-},{passive:false});
-sl.addEventListener('touchend',function(e){
- if(fPinch){
-  if(e.touches.length<2)fPinch=false;
-  return;
- }
- if(e.changedTouches.length===1&&sZm.st.z<=1.01){
-  var t=performance.now();
-  var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
-  if(t-fLT<320&&Math.hypot(x-fLX,y-fLY)<26){
-   sZm.bind();
-   sZm.zoomTo(2.5,x,y);
-   fLT=0;e.preventDefault();
-  }else{fLT=t;fLX=x;fLY=y;}
- }
-},{passive:false});
-
-/* Колесо мыши внутри сторис листает кадры */
 sl.addEventListener('wheel',function(e){
  if(!so.classList.contains('open'))return;
  e.preventDefault();
@@ -506,16 +509,17 @@ sl.addEventListener('wheel',function(e){
  else if(wAcc<-60){wAcc=0;fGo(fIdx-1);}
 },{passive:false});
 
-tiles.forEach(function(t,i){t.addEventListener('click',function(){openStory(i,t);});});
 document.getElementById('storyCta').addEventListener('click',function(e){
  e.preventDefault();closeOv(so);
  setTimeout(function(){document.getElementById('contacts').scrollIntoView({behavior:'smooth'});},340);
 });
 
-/* --- Полноэкранный просмотр фото --- */
+/* --- Полноэкранный просмотр --- */
 var fsO=document.getElementById('fsOvl'),fsImg=document.getElementById('fsImg');
 var fsZ=makeZoom(fsO,function(){return fsImg;});
+bindPinch(fsO,fsZ);
 function openFS(src){
+ if(!src)return;
  fsImg.src=src;
  fsZ.reset();
  fsO.classList.add('open');
@@ -525,13 +529,6 @@ function closeFS(){
  fsZ.reset();
  fsImg.src='';
 }
-document.getElementById('expStory').addEventListener('click',function(){
- var im=sImgEl();
- if(im)openFS(im.getAttribute('data-src')||im.src);
-});
-document.getElementById('expWork').addEventListener('click',function(){
- if(wImg.getAttribute('src'))openFS(wImg.src);
-});
 document.getElementById('fsClose').addEventListener('click',closeFS);
 fsO.addEventListener('click',function(e){if(e.target===fsO)closeFS();});
 fsO.addEventListener('wheel',function(e){
@@ -539,54 +536,22 @@ fsO.addEventListener('wheel',function(e){
  fsZ.zoomTo(fsZ.st.z*(e.deltaY<0?1.15:0.87));
 },{passive:false});
 fsO.addEventListener('dblclick',function(e){
- if(fsZ.st.z>1.01)fsZ.zoomTo(1);else fsZ.zoomTo(2.5,e.clientX,e.clientY);
+ fsZ.st.z>1.01?fsZ.zoomTo(1):fsZ.zoomTo(2.5,e.clientX,e.clientY);
 });
-/* Щипок и двойной тап в полноэкранном режиме */
-var gPD=0,gPZ=1,gpx0=0,gpy0=0,gLT=0,gLX=0,gLY=0;
-fsO.addEventListener('touchstart',function(e){
- if(e.touches.length===2){
-  e.preventDefault();
-  var a=e.touches[0],b=e.touches[1];
-  gPD=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-  gPZ=fsZ.st.z;
-  fsZ.bind();
-  var r=fsO.getBoundingClientRect();
-  var cx=(a.clientX+b.clientX)/2,cy=(a.clientY+b.clientY)/2;
-  gpx0=(cx-r.left-r.width/2-fsZ.st.x)/gPZ;
-  gpy0=(cy-r.top-r.height/2-fsZ.st.y)/gPZ;
- }
-},{passive:false});
-fsO.addEventListener('touchmove',function(e){
- e.preventDefault();
- if(e.touches.length===2){
-  var a=e.touches[0],b=e.touches[1];
-  var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-  fsZ.st.z=Math.max(1,Math.min(4,gPZ*d/gPD));
-  if(fsZ.st.z<=1.01){fsZ.reset();}
-  else{
-   var r=fsO.getBoundingClientRect();
-   fsZ.st.x=((a.clientX+b.clientX)/2-r.left-r.width/2)-fsZ.st.z*gpx0;
-   fsZ.st.y=((a.clientY+b.clientY)/2-r.top-r.height/2)-fsZ.st.z*gpy0;
-   fsZ.clamp();fsZ.apply();
-  }
- }
-},{passive:false});
-fsO.addEventListener('touchend',function(e){
- if(e.changedTouches.length===1&&fsZ.st.z<=1.01){
-  var t=performance.now();
-  var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
-  if(t-gLT<320&&Math.hypot(x-gLX,y-gLY)<26){
-   fsZ.zoomTo(2.5,x,y);
-   gLT=0;e.preventDefault();
-  }else{gLT=t;gLX=x;gLY=y;}
- }
-},{passive:false});
+
+/* Значок в правом нижнем углу окна сторис — открывает текущий кадр на весь экран.
+   Обычный клик по фото ничего не открывает. */
+document.getElementById('expStory').addEventListener('click',function(e){
+ e.stopPropagation();
+ var im=sImgEl();
+ if(im)openFS(im.getAttribute('data-src')||im.src);
+});
 
 /* --- Просмотр работ --- */
 var wo=document.getElementById('workOvl');
 var wBig=document.getElementById('wBig'),wImg=document.getElementById('wImg');
 var wZm=makeZoom(wBig,function(){return wImg;});
-var wLastTouchEnd=0;
+bindPinch(wBig,wZm);
 function openWork(i,fromEl){
  overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
  setLock(true);
@@ -610,62 +575,10 @@ document.getElementById('workCta').addEventListener('click',function(e){
  e.preventDefault();closeOv(wo);
  setTimeout(function(){document.getElementById('contacts').scrollIntoView({behavior:'smooth'});},340);
 });
-/* Щипок и перетаскивание фото работ (телефон) */
-var wPD=0,wPZ=1,wpx0=0,wpy0=0,wLT=0,wLX=0,wLY=0;
-wBig.addEventListener('touchstart',function(e){
- if(e.touches.length===2){
-  e.preventDefault();
-  var a=e.touches[0],b=e.touches[1];
-  wPD=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-  wPZ=wZm.st.z;
-  wZm.bind();
-  var r=wBig.getBoundingClientRect();
-  var cx=(a.clientX+b.clientX)/2,cy=(a.clientY+b.clientY)/2;
-  wpx0=(cx-r.left-r.width/2-wZm.st.x)/wPZ;
-  wpy0=(cy-r.top-r.height/2-wZm.st.y)/wPZ;
- }
-},{passive:false});
-wBig.addEventListener('touchmove',function(e){
- if(e.touches.length===2){
-  e.preventDefault();
-  var a=e.touches[0],b=e.touches[1];
-  var d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1;
-  wZm.st.z=Math.max(1,Math.min(4,wPZ*d/wPD));
-  if(wZm.st.z<=1.01){wZm.reset();}
-  else{
-   var r=wBig.getBoundingClientRect();
-   wZm.st.x=((a.clientX+b.clientX)/2-r.left-r.width/2)-wZm.st.z*wpx0;
-   wZm.st.y=((a.clientY+b.clientY)/2-r.top-r.height/2)-wZm.st.z*wpy0;
-   wZm.clamp();wZm.apply();
-  }
-  return;
- }
- if(e.touches.length===1&&wZm.st.z>1){
-  e.preventDefault();
-  wZm.panBy(e.touches[0].clientX-wLX2,e.touches[0].clientY-wLY2);
- }
-},{passive:false});
-var wLX2=0,wLY2=0;
-wBig.addEventListener('touchstart',function(e){
- if(e.touches.length===1&&wZm.st.z>1){wLX2=e.touches[0].clientX;wLY2=e.touches[0].clientY;}
-},{passive:false});
-wBig.addEventListener('touchend',function(e){
- if(e.touches.length>0)return;
- wLastTouchEnd=performance.now();
- if(e.changedTouches.length===1&&wZm.st.z<=1.01){
-  var t=performance.now();
-  var x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
-  if(t-wLT<320&&Math.hypot(x-wLX,y-wLY)<26){
-   wZm.zoomTo(2.5,x,y);
-   wLT=0;e.preventDefault();
-  }else{wLT=t;wLX=x;wLY=y;}
- }
-},{passive:false});
-/* Клик мышью по фото работ — открыть на весь экран (на телефоне работает кнопка ⤢) */
-wBig.addEventListener('click',function(){
- if(performance.now()-wLastTouchEnd<600)return;
- if(wZm.st.z>1.01)return;
- if(wImg.getAttribute('src'))openFS(wImg.src);
+/* Значок на фото работ — на весь экран */
+document.getElementById('expWork').addEventListener('click',function(e){
+ e.stopPropagation();
+ openFS(wImg.getAttribute('src'));
 });
 
 /* --- Закрытие: блокировка страницы снимается сразу --- */
@@ -721,6 +634,7 @@ window.addEventListener('keydown',function(e){
 </script>
 </body>
 </html>
+
 
 
 
