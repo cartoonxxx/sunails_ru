@@ -101,6 +101,9 @@ var WORKS=[
 {title:'Весеннее цветение',text:'Веточка сакуры на молочном фоне — самый нежный маникюр этой весны.',img:'images/work-3-sakura.jpg'}
 ];
 
+/* --- Блокировка прокрутки страницы при открытом оверлее --- */
+function setLock(on){document.body.classList.toggle('lock',on);}
+
 /* --- Лента сторис --- */
 var track=document.getElementById('strack');
 var tiles=Array.prototype.slice.call(track.querySelectorAll('.story-tile'));
@@ -134,7 +137,7 @@ document.getElementById('sPrev').addEventListener('click',function(){go(-1);});
 document.getElementById('sNext').addEventListener('click',function(){go(1);});
 
 /* --- Автопрокрутка ленты (только телефон) --- */
-var overlayOpen=false; /* true, пока открыта любая история или работа */
+var overlayOpen=false;
 var pausedUntil=0, autoT=null, lastAutoT=0;
 function autoLoop(t){
  if(!IS_MOBILE.matches){autoT=null;lastAutoT=0;return;}
@@ -216,9 +219,11 @@ track.addEventListener('scroll',function(){
 var so=document.getElementById('storyOvl'),sv=document.getElementById('storyView');
 var sl=document.getElementById('slides'),pg=document.getElementById('prog');
 var cap=document.getElementById('cap');
-var curStory=0,sIdx=0,sTimer=null;
+var curStory=0,sIdx=0;
+
 function openStory(i,fromEl){
  overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ setLock(true);
  curStory=i;sIdx=0;
  sl.innerHTML='';pg.innerHTML='';
  STORIES[i].slides.forEach(function(u,k){
@@ -243,23 +248,46 @@ function openStory(i,fromEl){
   startSlide(0);
  });});
 }
+/* Кадры больше НЕ меняются сами: смена только по тапу или свайпу */
 function startSlide(k){
  sIdx=k;
  var segs=pg.children,sls=sl.children,j;
  for(j=0;j<segs.length;j++)segs[j].className='seg'+(j<k?' done':'');
- segs[k].className='seg run';
+ segs[k].className='seg done';
  for(j=0;j<sls.length;j++)sls[j].className='slide'+(j===k?' on':'');
- if(sTimer)clearTimeout(sTimer);
- sTimer=setTimeout(function(){
-  if(sIdx+1<STORIES[curStory].slides.length)startSlide(sIdx+1);else closeOv(so);
- },5000);
 }
-document.getElementById('tzR').addEventListener('click',function(){
- if(sIdx+1<STORIES[curStory].slides.length)startSlide(sIdx+1);else closeOv(so);
+function nextSlide(){
+ if(sIdx+1<STORIES[curStory].slides.length)startSlide(sIdx+1);
+}
+function prevSlide(){
+ if(sIdx>0)startSlide(sIdx-1);
+}
+document.getElementById('tzR').addEventListener('click',function(){nextSlide();});
+document.getElementById('tzL').addEventListener('click',function(){prevSlide();});
+
+/* Свайп внутри окна сторис: влево — следующий кадр, вправо — предыдущий.
+   Вертикальный жест игнорируется (не мешает закрытию и не путается с тапом). */
+var swX=0,swY=0,swOn=false,swFired=false;
+sv.addEventListener('pointerdown',function(e){
+ swX=e.clientX;swY=e.clientY;swOn=true;swFired=false;
 });
-document.getElementById('tzL').addEventListener('click',function(){
- if(sIdx>0)startSlide(sIdx-1);else startSlide(sIdx);
+window.addEventListener('pointermove',function(e){
+ if(!swOn)return;
+ var dx=e.clientX-swX,dy=e.clientY-swY;
+ if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.3)swFired=true;
+},{passive:true});
+window.addEventListener('pointerup',function(e){
+ if(!swOn)return;swOn=false;
+ var dx=e.clientX-swX,dy=e.clientY-swY;
+ if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.3){
+  if(dx<0)nextSlide();else prevSlide();
+  swFired=true;
+ }
 });
+sv.addEventListener('click',function(e){
+ if(swFired){e.stopPropagation();e.preventDefault();swFired=false;}
+},true);
+
 tiles.forEach(function(t,i){t.addEventListener('click',function(){openStory(i,t);});});
 document.getElementById('storyCta').addEventListener('click',function(e){
  e.preventDefault();closeOv(so);
@@ -270,6 +298,7 @@ document.getElementById('storyCta').addEventListener('click',function(e){
 var wo=document.getElementById('workOvl');
 function openWork(i,fromEl){
  overlayOpen=true;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ setLock(true);
  document.getElementById('wImg').style.backgroundImage='url('+WORKS[i].img+')';
  document.getElementById('wTitle').textContent=WORKS[i].title;
  document.getElementById('wText').textContent=WORKS[i].text;
@@ -293,13 +322,22 @@ document.getElementById('workCta').addEventListener('click',function(e){
 /* --- Закрытие --- */
 function closeOv(o){
  o.classList.remove('show');
- if(sTimer){clearTimeout(sTimer);sTimer=null;}
  overlayOpen=false;pausedUntil=performance.now()+AUTO_PAUSE_MS;
+ if(!so.classList.contains('open')&&!wo.classList.contains('open'))setLock(false);
  setTimeout(function(){o.classList.remove('open');},320);
 }
 document.querySelectorAll('[data-close]').forEach(function(el){
  el.addEventListener('click',function(){closeOv(el.closest('.ovl'));});
 });
+
+/* Пока открыт оверлей — жесты по нему не прокручивают страницу.
+   Исключение: прокручиваемый текст внутри окна работ (.winfo). */
+[so,wo].forEach(function(o){
+ o.addEventListener('touchmove',function(e){
+  if(!e.target.closest||!e.target.closest('.winfo'))e.preventDefault();
+ },{passive:false});
+});
+
 window.addEventListener('keydown',function(e){
  if(e.key==='Escape'){
   if(so.classList.contains('open'))closeOv(so);
@@ -310,4 +348,5 @@ window.addEventListener('keydown',function(e){
 </script>
 </body>
 </html>
+
 
